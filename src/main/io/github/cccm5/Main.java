@@ -26,7 +26,6 @@ import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.craft.CraftManager;
 import net.countercraft.movecraft.utils.MovecraftLocation;
 public class Main extends JavaPlugin implements Listener {
-
     private CraftManager craftManager;
     public void onEnable() {
         this.getServer().getPluginManager().registerEvents(this, this);
@@ -123,6 +122,7 @@ public class Main extends JavaPlugin implements Listener {
                 }else{
                     sign.setLine(0,ChatColor.RED + ChatColor.stripColor(sign.getLine(0)));
                 }
+                sign.update();
             }
         }
     }
