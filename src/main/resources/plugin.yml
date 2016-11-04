@@ -1,8 +1,9 @@
 name: MovecraftUnloading
 main: io.github.cccm5.Main
-version: 0.0.1
-depends: [Movecraft]
+version: 1.0.0
+depend: [Movecraft]
 commands:
     load:
-        description: load cargo from a piloted craft
-        usage: /load
+        description: loads cargo
+    unload:
+        description: unloads cargo
