@@ -83,6 +83,7 @@ public class Main extends JavaPlugin implements Listener {
                             }
                         }
                     }
+                    p.updateInventory();
                     return;
                 }
 
@@ -98,8 +99,10 @@ public class Main extends JavaPlugin implements Listener {
                         lookup.add(Material.getMaterial(sign.getLine(2).toUpperCase().replaceAll(" ","_")));
                     if(Utils.isInventoryHolder(sign.getLine(3)))
                         lookup.add(Material.getMaterial(sign.getLine(3).toUpperCase().replaceAll(" ","_")));
+
                     if(craft!=null && heldItem !=null){
                         for(Inventory inv : Utils.getInventorysOnCraft(craft,p.getInventory().getItemInMainHand(),lookup)){
+                            Bukkit.broadcastMessage(inv.getTitle());
                             for(ItemStack cargoStack : inv){
                                 if(cargoStack.isSimilar(heldItem)){
                                     int limit = Utils.addLimit(playerInv,cargoStack);
@@ -118,8 +121,7 @@ public class Main extends JavaPlugin implements Listener {
                             }
                         }
                     }
-                    return;
-
+                    p.updateInventory();
                 }
             }
         }
