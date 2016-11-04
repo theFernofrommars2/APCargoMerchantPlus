@@ -44,6 +44,8 @@ public class Utils
      * @return true if the block can contain an inventory, otherwise false
      */
     public static boolean isInventoryHolder(Block block){
+        if(block==null)
+            return false;
         return isInventoryHolder(block.getType());
     }
 
