@@ -1,6 +1,5 @@
 package io.github.cccm5;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +28,12 @@ public class Utils
             if(material.equals(mat))
                 return true;
         }
+        return false;
+    }
+
+    public static boolean isInventoryHolder(String type){
+        if(Material.getMaterial(type)!=null)
+            return isInventoryHolder(Material.getMaterial(type));
         return false;
     }
 

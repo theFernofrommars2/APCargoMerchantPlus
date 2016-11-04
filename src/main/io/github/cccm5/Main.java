@@ -115,10 +115,9 @@ public class Main extends JavaPlugin implements Listener {
     @EventHandler
     public void onSignPlace(SignChangeEvent e){
         if(e.getBlock().getType().equals(Material.SIGN) || e.getBlock().getType().equals(Material.WALL_SIGN) || e.getBlock().getType().equals(Material.SIGN_POST)){
-            
             Bukkit.broadcastMessage(e.getLine(0));
             if(ChatColor.stripColor(e.getLine(0)).equalsIgnoreCase("[Load]") || ChatColor.stripColor(e.getLine(0)).equalsIgnoreCase("[UnLoad]")){
-                if((!e.getLine(2).trim().equals("") && Utils.isInventoryHolder(Material.getMaterial(e.getLine(1)))) && (!e.getLine(2).trim().equals("") && Utils.isInventoryHolder(Material.getMaterial(e.getLine(2))))){
+                if((!e.getLine(1).trim().equals("") && Utils.isInventoryHolder(e.getLine(1))) || (!e.getLine(2).trim().equals("") && Utils.isInventoryHolder(e.getLine(2)))){
                     e.setLine(0,ChatColor.GREEN + ChatColor.stripColor(e.getLine(0)));
                 }else{
                     e.setLine(0,ChatColor.RED + ChatColor.stripColor(e.getLine(0)));
