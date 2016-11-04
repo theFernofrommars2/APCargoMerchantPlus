@@ -116,6 +116,7 @@ public class Main extends JavaPlugin implements Listener {
     public void onBlockPlaceEvent(BlockPlaceEvent e){
         if(e.getBlock().getType().equals(Material.SIGN) || e.getBlock().getType().equals(Material.WALL_SIGN) || e.getBlock().getType().equals(Material.SIGN_POST)){
             Sign sign = (Sign)(e.getBlock().getState());
+            Bukkit.broadcastMessage(sign.getLine(0));
             if(ChatColor.stripColor(sign.getLine(0)).equalsIgnoreCase("[Load]") || ChatColor.stripColor(sign.getLine(0)).equalsIgnoreCase("[UnLoad]")){
                 if((!sign.getLine(2).trim().equals("") && Utils.isInventoryHolder(Material.getMaterial(sign.getLine(1)))) && (!sign.getLine(2).trim().equals("") && Utils.isInventoryHolder(Material.getMaterial(sign.getLine(2))))){
                     sign.setLine(0,ChatColor.GREEN + ChatColor.stripColor(sign.getLine(0)));
