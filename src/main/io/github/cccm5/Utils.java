@@ -32,8 +32,8 @@ public class Utils
     }
 
     public static boolean isInventoryHolder(String type){
-        if(Material.getMaterial(type)!=null)
-            return isInventoryHolder(Material.getMaterial(type));
+        if(Material.getMaterial(type.toUpperCase().replaceAll(" ","_"))!=null)
+            return isInventoryHolder(Material.getMaterial(type.toUpperCase().replaceAll(" ","_")));
         return false;
     }
 

@@ -1,6 +1,5 @@
 package io.github.cccm5;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,8 +56,15 @@ public class Main extends JavaPlugin implements Listener {
                 if (sign.getLine(0).equals(ChatColor.GREEN + "[Load]")) {
                     Craft craft = craftManager.getCraftByPlayer(e.getPlayer());
                     ItemStack heldItem = p.getInventory().getItemInMainHand();
+                    ArrayList<Material> lookup = new ArrayList<Material>(3);
+                    if(Utils.isInventoryHolder(sign.getLine(1)))
+                        lookup.add(Material.getMaterial(sign.getLine(1)));
+                    if(Utils.isInventoryHolder(sign.getLine(2)))
+                        lookup.add(Material.getMaterial(sign.getLine(2)));
+                    if(Utils.isInventoryHolder(sign.getLine(3)))
+                        lookup.add(Material.getMaterial(sign.getLine(3)));
                     if(craft!=null && heldItem !=null){
-                        for(Inventory inv : Utils.getInventorysOnCraft(craft,p.getInventory().getItemInMainHand())){
+                        for(Inventory inv : Utils.getInventorysOnCraft(craft,p.getInventory().getItemInMainHand(),lookup)){
                             for(ItemStack playerStack : p.getInventory().getContents()){
                                 if(playerStack.isSimilar(heldItem)){
                                     int limit = Utils.addLimit(inv,playerStack);
@@ -85,8 +91,15 @@ public class Main extends JavaPlugin implements Listener {
                     Craft craft = craftManager.getCraftByPlayer(e.getPlayer());
                     ItemStack heldItem = p.getInventory().getItemInMainHand();
                     Inventory playerInv = p.getInventory();
+                    ArrayList<Material> lookup = new ArrayList<Material>(3);
+                    if(Utils.isInventoryHolder(sign.getLine(1)))
+                        lookup.add(Material.getMaterial(sign.getLine(1).toUpperCase().replaceAll(" ","_")));
+                    if(Utils.isInventoryHolder(sign.getLine(2)))
+                        lookup.add(Material.getMaterial(sign.getLine(2).toUpperCase().replaceAll(" ","_")));
+                    if(Utils.isInventoryHolder(sign.getLine(3)))
+                        lookup.add(Material.getMaterial(sign.getLine(3).toUpperCase().replaceAll(" ","_")));
                     if(craft!=null && heldItem !=null){
-                        for(Inventory inv : Utils.getInventorysOnCraft(craft,p.getInventory().getItemInMainHand())){
+                        for(Inventory inv : Utils.getInventorysOnCraft(craft,p.getInventory().getItemInMainHand(),lookup)){
                             for(ItemStack cargoStack : inv){
                                 if(cargoStack.isSimilar(heldItem)){
                                     int limit = Utils.addLimit(playerInv,cargoStack);
