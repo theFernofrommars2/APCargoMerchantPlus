@@ -99,7 +99,7 @@ public class Main extends JavaPlugin implements Listener {
                         lookup.add(Material.getMaterial(sign.getLine(2).toUpperCase().replaceAll(" ","_")));
                     if(Utils.isInventoryHolder(sign.getLine(3)))
                         lookup.add(Material.getMaterial(sign.getLine(3).toUpperCase().replaceAll(" ","_")));
-
+                    Bukkit.broadcastMessage(lookup.get(0).name());
                     if(craft!=null && heldItem !=null){
                         for(Inventory inv : Utils.getInventorysOnCraft(craft,p.getInventory().getItemInMainHand(),lookup)){
                             Bukkit.broadcastMessage(inv.getTitle());
