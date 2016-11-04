@@ -15,7 +15,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -113,17 +113,16 @@ public class Main extends JavaPlugin implements Listener {
     }
 
     @EventHandler
-    public void onBlockPlaceEvent(BlockPlaceEvent e){
+    public void onSignPlace(SignChangeEvent e){
         if(e.getBlock().getType().equals(Material.SIGN) || e.getBlock().getType().equals(Material.WALL_SIGN) || e.getBlock().getType().equals(Material.SIGN_POST)){
-            Sign sign = (Sign)(e.getBlock().getState());
-            Bukkit.broadcastMessage(sign.getLine(0));
-            if(ChatColor.stripColor(sign.getLine(0)).equalsIgnoreCase("[Load]") || ChatColor.stripColor(sign.getLine(0)).equalsIgnoreCase("[UnLoad]")){
-                if((!sign.getLine(2).trim().equals("") && Utils.isInventoryHolder(Material.getMaterial(sign.getLine(1)))) && (!sign.getLine(2).trim().equals("") && Utils.isInventoryHolder(Material.getMaterial(sign.getLine(2))))){
-                    sign.setLine(0,ChatColor.GREEN + ChatColor.stripColor(sign.getLine(0)));
+            
+            Bukkit.broadcastMessage(e.getLine(0));
+            if(ChatColor.stripColor(e.getLine(0)).equalsIgnoreCase("[Load]") || ChatColor.stripColor(e.getLine(0)).equalsIgnoreCase("[UnLoad]")){
+                if((!e.getLine(2).trim().equals("") && Utils.isInventoryHolder(Material.getMaterial(e.getLine(1)))) && (!e.getLine(2).trim().equals("") && Utils.isInventoryHolder(Material.getMaterial(e.getLine(2))))){
+                    e.setLine(0,ChatColor.GREEN + ChatColor.stripColor(e.getLine(0)));
                 }else{
-                    sign.setLine(0,ChatColor.RED + ChatColor.stripColor(sign.getLine(0)));
+                    e.setLine(0,ChatColor.RED + ChatColor.stripColor(e.getLine(0)));
                 }
-                sign.update();
             }
         }
     }
