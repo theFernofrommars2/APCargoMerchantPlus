@@ -66,7 +66,7 @@ public class Main extends JavaPlugin implements Listener {
                     if(craft!=null && heldItem !=null){
                         for(Inventory inv : Utils.getInventorysOnCraft(craft,p.getInventory().getItemInMainHand(),lookup)){
                             for(ItemStack playerStack : p.getInventory().getContents()){
-                                if(playerStack.isSimilar(heldItem)){
+                                if(playerStack != null && playerStack.isSimilar(heldItem)){
                                     int limit = Utils.addLimit(inv,playerStack);
                                     if(limit>0){
                                         if(Utils.hasSpace(inv,playerStack)){
@@ -104,7 +104,7 @@ public class Main extends JavaPlugin implements Listener {
                         for(Inventory inv : Utils.getInventorysOnCraft(craft,p.getInventory().getItemInMainHand(),lookup)){
                             Bukkit.broadcastMessage(inv.getTitle());
                             for(ItemStack cargoStack : inv){
-                                if(cargoStack.isSimilar(heldItem)){
+                                if(cargoStack != null && cargoStack.isSimilar(heldItem)){
                                     int limit = Utils.addLimit(playerInv,cargoStack);
 
                                     if(limit>0){
