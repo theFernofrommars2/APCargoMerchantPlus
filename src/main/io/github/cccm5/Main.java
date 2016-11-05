@@ -65,7 +65,9 @@ public class Main extends JavaPlugin implements Listener {
                         lookup.add(Material.getMaterial(sign.getLine(3)));
                     if(craft!=null && heldItem !=null){
                         for(Inventory inv : Utils.getInventorysOnCraft(craft,p.getInventory().getItemInMainHand(),lookup)){
-                            for(ItemStack playerStack : p.getInventory().getContents()){
+                            //for(ItemStack playerStack : p.getInventory().getContents()){
+                            for(int i = 0; i<inv.getSize(); i++){
+                                ItemStack playerStack = inv.getItem(i);
                                 if(playerStack != null && playerStack.isSimilar(heldItem)){
                                     int limit = Utils.addLimit(inv,playerStack);
                                     if(limit>0){
@@ -103,7 +105,9 @@ public class Main extends JavaPlugin implements Listener {
                     if(craft!=null && heldItem !=null){
                         for(Inventory inv : Utils.getInventorysOnCraft(craft,p.getInventory().getItemInMainHand(),lookup)){
                             Bukkit.broadcastMessage(inv.getTitle());
-                            for(ItemStack cargoStack : inv){
+                            //for(ItemStack cargoStack : inv){
+                            for(int i = 0; i<inv.getSize(); i++){
+                                ItemStack cargoStack = inv.getItem(i);
                                 if(cargoStack != null && cargoStack.isSimilar(heldItem)){
                                     int limit = Utils.addLimit(playerInv,cargoStack);
 
@@ -117,7 +121,8 @@ public class Main extends JavaPlugin implements Listener {
                                             inv.addItem(itemClone);
                                             p.getInventory().removeItem(itemClone);
                                         }
-                                    }}
+                                    }
+                                }
                             }
                         }
                     }
