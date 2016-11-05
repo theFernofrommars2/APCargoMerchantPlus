@@ -132,13 +132,15 @@ public class Utils
         return false;
     }
 
-    public static int addLimit(Inventory inv, ItemStack item){      
+    public static int addLimit(Inventory inv, ItemStack item){
+        if(item == null)
+            return 0;
         int count = 0;
         for(ItemStack tempStack : inv.getContents())
         {
             if(tempStack == null)
                 count+=item.getMaxStackSize();
-            if(tempStack.isSimilar(item)){
+            else if(tempStack.isSimilar(item)){
                 count+=tempStack.getMaxStackSize()-tempStack.getAmount();
             }
         }
