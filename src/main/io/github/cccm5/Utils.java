@@ -14,6 +14,7 @@ import org.bukkit.World;
 import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.utils.MovecraftLocation;
 
+import net.citizensnpcs.api.npc.NPC;
 public class Utils
 {
     private static final Material[] INVENTORY_MATERIALS = new Material[]{Material.CHEST,Material.TRAPPED_CHEST, Material.FURNACE, Material.HOPPER,Material.DROPPER,Material.DISPENSER, Material.BREWING_STAND};
@@ -145,5 +146,9 @@ public class Utils
             }
         }
         return count;
+    }
+    
+    public static NPC[] getAllWithTrait(Class c){
+        return null;
     }
 }

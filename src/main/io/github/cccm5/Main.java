@@ -38,9 +38,19 @@ public class Main extends JavaPlugin implements Listener {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) { // Plugin
         Player player = (Player) sender;
         if (command.getName().equalsIgnoreCase("unload") && sender instanceof Player) {
+            //************************
+            //*     To Implement     *
+            //************************
+            //check if there any npcs with cargo trait
+            new UnloadTask(craftManager.getCraftByPlayer(player)).runTaskTimer(this,10,10);
             return true;
         }
         if (command.getName().equalsIgnoreCase("load") && sender instanceof Player) {
+            //************************
+            //*     To Implement     *
+            //************************
+            //check if there any npcs with cargo trait
+            new LoadTask(craftManager.getCraftByPlayer(player)).runTaskTimer(this,10,10);
             return true;
         }
         return false;
