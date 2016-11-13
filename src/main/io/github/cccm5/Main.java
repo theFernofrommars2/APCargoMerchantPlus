@@ -165,7 +165,7 @@ public class Main extends JavaPlugin implements Listener {
 
             sender.sendMessage(SUCCES_TAG + "Started unloading cargo");
             playersInQue.add(player);
-            new UnloadTask(craftManager.getCraftByPlayer(player),stock,finalItem ).runTaskTimer(this,delay,delay);
+            new UnloadTask(craftManager.getCraftByPlayer(player),stock,finalItem ).runTaskTimer(this,0,delay);
             return true;
         }
 
@@ -221,7 +221,7 @@ public class Main extends JavaPlugin implements Listener {
             }
 
             playersInQue.add(player);
-            new LoadTask(craftManager.getCraftByPlayer(player),stock,finalItem ).runTaskTimer(this,delay,delay);
+            new LoadTask(craftManager.getCraftByPlayer(player),stock,finalItem ).runTaskTimer(this,0,delay);
             sender.sendMessage(SUCCES_TAG + "Started loading cargo");
             return true;
         }
@@ -294,7 +294,7 @@ public class Main extends JavaPlugin implements Listener {
 
                     player.sendMessage(SUCCES_TAG + "Started unloading cargo");
                     playersInQue.add(player);
-                    new UnloadTask(craftManager.getCraftByPlayer(player),stock,finalItem ).runTaskTimer(this,delay,delay);
+                    new UnloadTask(craftManager.getCraftByPlayer(player),stock,finalItem ).runTaskTimer(this,0,delay);
                     return;
                 }
 
@@ -345,7 +345,7 @@ public class Main extends JavaPlugin implements Listener {
                     }
 
                     playersInQue.add(player);
-                    new LoadTask(craftManager.getCraftByPlayer(player),stock,finalItem ).runTaskTimer(this,delay,delay);
+                    new LoadTask(craftManager.getCraftByPlayer(player),stock,finalItem ).runTaskTimer(this,0,delay);
                     player.sendMessage(SUCCES_TAG + "Started loading cargo");
                     return;
                 }
