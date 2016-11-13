@@ -22,7 +22,7 @@ public class UnloadTask extends CargoTask
         //************************
         //check if there's any chests with cargo, cancel if false - done
         //get the first chest with cargo - done
-        //get the price of all the cargo
+        //get the price of all the cargo - done
         //remove the items, pay the user while taking a tax
         Inventory inv = Utils.firstInventory(craft, item.getItem(), Material.CHEST, Material.TRAPPED_CHEST);
         if(inv == null){
@@ -31,6 +31,14 @@ public class UnloadTask extends CargoTask
             return;
         }
         //FOR TESTING ONLY
-        inv.clear();
+        int count = 0;
+        for(int i = 0; i<inv.getSize();i++){
+            if(inv.getItem(i).isSimilar(item.getItem())){
+                count+=inv.getItem(i).getAmount();
+                inv.setItem(i,null);
+            }
+        }
+        originalPilot.sendMessage(Main.SUCCES_TAG + "Sold " + count + " items for $" + String.format("%.2f", count*item.getPrice()));
+        Main.getEconomy().depositPlayer(originalPilot,count*item.getPrice());
     }
 }

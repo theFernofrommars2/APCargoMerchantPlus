@@ -40,8 +40,9 @@ public class Main extends JavaPlugin implements Listener {
     public static final String ERROR_TAG = ChatColor.RED + "Error: " + ChatColor.DARK_RED;
     public static final String SUCCES_TAG = ChatColor.DARK_AQUA + "Cargo: " + ChatColor.WHITE;
     public static Logger logger;
-    private CraftManager craftManager;
     private static Economy economy;
+
+    private CraftManager craftManager;
     private FileConfiguration config;
     private boolean cardinalDistance;
     private static boolean debug;
@@ -99,6 +100,7 @@ public class Main extends JavaPlugin implements Listener {
     public void onDisable() {
         net.citizensnpcs.api.CitizensAPI.getTraitFactory().deregisterTrait(net.citizensnpcs.api.trait.TraitInfo.create(CargoTrait.class));
         logger = null;
+        economy = null;
     }
 
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) { // Plugin
@@ -298,8 +300,12 @@ public class Main extends JavaPlugin implements Listener {
             }
         }
     }
-    
+
     public static boolean isDebug(){
         return debug;
+    }
+
+    public static Economy getEconomy(){
+        return economy;
     }
 }
