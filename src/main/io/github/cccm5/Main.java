@@ -68,7 +68,7 @@ public class Main extends JavaPlugin implements Listener {
         this.saveConfig();
         scanRange = config.getDouble("Scan range") >= 1.0 ? config.getDouble("Scan range") : 100.0;
         delay = config.getInt("Transfer delay ticks");
-        tax = config.getDouble("Transfer tax percent");
+        tax = config.getDouble("Transfer tax percent")<=1.0 && config.getDouble("Transfer tax percent")>=0.0 ? config.getDouble("Transfer tax percent") : 0.01;
         cardinalDistance = config.getBoolean("Cardinal distance");
         debug = config.getBoolean("Debug mode");
         //************************
