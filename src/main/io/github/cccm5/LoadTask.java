@@ -28,24 +28,19 @@ public class LoadTask extends CargoTask
         //add the items to chest
         //charge user price of cargo plus tax
         Inventory inv = Utils.firstInventoryWithSpace(craft, item.getItem(), Material.CHEST,Material.TRAPPED_CHEST);
-        if(inv == null){
-            this.cancel();
-            Main.getQue().remove(originalPilot);
-            originalPilot.sendMessage(Main.SUCCES_TAG + "All cargo loaded");
-            return;
-        }
+        
 
         int loaded=0;
         for(int i =0; i < inv.getSize() ; i++)
             if(inv.getItem(i)==null || inv.getItem(i).getType()==Material.AIR || inv.getItem(i).isSimilar(item.getItem())){
                 int maxCount = (inv.getItem(i)==null || inv.getItem(i).getType()==Material.AIR) ? item.getItem().getMaxStackSize() : inv.getItem(i).getMaxStackSize() - inv.getItem(i).getAmount();
-                if(Main.getEconomy().has(originalPilot,item.getPrice()*(maxCount))){
+                if(CargoMain.getEconomy().has(originalPilot,item.getPrice()*(maxCount))){
                     loaded+=maxCount;
                     ItemStack tempItem = item.getItem().clone();
                     tempItem.setAmount(tempItem.getMaxStackSize());
                     inv.setItem(i,tempItem);
                 }else{
-                    maxCount = (int)(Main.getEconomy().getBalance(originalPilot)/item.getPrice());
+                    maxCount = (int)(CargoMain.getEconomy().getBalance(originalPilot)/item.getPrice());
                     ItemStack tempItem = item.getItem().clone();
                     if(inv.getItem(i)==null || inv.getItem(i).getType()==Material.AIR) 
                         tempItem.setAmount(maxCount);
@@ -54,14 +49,22 @@ public class LoadTask extends CargoTask
                     inv.setItem(i,tempItem);
                     loaded+=maxCount;
                     this.cancel();
-                    Main.getQue().remove(originalPilot);
-                    originalPilot.sendMessage(Main.SUCCES_TAG + "Sold " + loaded + " items for $" + String.format("%.2f", loaded*item.getPrice() - Main.getTax()*loaded*item.getPrice()) + " took a tax of " + String.format("%.2f",Main.getTax()*loaded*item.getPrice()));
-                    originalPilot.sendMessage(Main.SUCCES_TAG + "You ran out of money!");
+                    CargoMain.getQue().remove(originalPilot);
+                    originalPilot.sendMessage(CargoMain.SUCCES_TAG + "Loaded " + loaded + " items for $" + String.format("%.2f", loaded*item.getPrice() - CargoMain.getTax()*loaded*item.getPrice()) + " took a tax of " + String.format("%.2f",CargoMain.getTax()*loaded*item.getPrice()));
+                    originalPilot.sendMessage(CargoMain.SUCCES_TAG + "You ran out of money!");
                     break;
                 }
             }
 
-        originalPilot.sendMessage(Main.SUCCES_TAG + "Sold " + loaded + " items for $" + String.format("%.2f", loaded*item.getPrice() - Main.getTax()*loaded*item.getPrice()) + " took a tax of " + String.format("%.2f",Main.getTax()*loaded*item.getPrice()));
-        Main.getEconomy().withdrawPlayer(originalPilot,loaded*item.getPrice());
+        originalPilot.sendMessage(CargoMain.SUCCES_TAG + "Loaded " + loaded + " items for $" + String.format("%.2f", loaded*item.getPrice() - CargoMain.getTax()*loaded*item.getPrice()) + " took a tax of " + String.format("%.2f",CargoMain.getTax()*loaded*item.getPrice()));
+        CargoMain.getEconomy().withdrawPlayer(originalPilot,loaded*item.getPrice());
+        
+        inv = Utils.firstInventoryWithSpace(craft, item.getItem(), Material.CHEST,Material.TRAPPED_CHEST);
+        if(inv == null){
+            this.cancel();
+            CargoMain.getQue().remove(originalPilot);
+            originalPilot.sendMessage(CargoMain.SUCCES_TAG + "All cargo loaded");
+            return;
+        }
     }
 }

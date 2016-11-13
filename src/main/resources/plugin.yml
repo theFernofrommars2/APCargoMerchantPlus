@@ -1,11 +1,21 @@
-name: MovecraftUnloading
-main: io.github.cccm5.Main
+name: Cargo
+main: io.github.cccm5.CargoMain
 version: 1.0.0
 depend: [Movecraft, Vault, Citizens, dtlCore, dtlTraders]
 commands:
     load:
         description: loads cargo
+        permission: Cargo.load
     unload:
         description: unloads cargo
-    cargo:
+        permission: Cargo.unload
+    cargo: Cargo.cargo
         description: get information about the plugin
+        permission:
+permissions:
+    Cargo.load:
+        description: Allows users to load cargo
+    Cargo.unload:
+        description: Allows users unload cargo
+    Cargo.cargo:
+        description: Allows users to use /cargo

@@ -25,12 +25,6 @@ public class UnloadTask extends CargoTask
         //get the price of all the cargo - done
         //remove the items, pay the user while taking a tax
         Inventory inv = Utils.firstInventory(craft, item.getItem(), Material.CHEST, Material.TRAPPED_CHEST);
-        if(inv == null){
-            this.cancel();
-            Main.getQue().remove(originalPilot);
-            originalPilot.sendMessage(Main.SUCCES_TAG + "All cargo unloaded");
-            return;
-        }
         int count = 0;
         for(int i = 0; i<inv.getSize();i++){
             if(inv.getItem(i) != null && inv.getItem(i).isSimilar(item.getItem())){
@@ -38,7 +32,14 @@ public class UnloadTask extends CargoTask
                 inv.setItem(i,null);
             }
         }
-        originalPilot.sendMessage(Main.SUCCES_TAG + "Sold " + count + " items for $" + String.format("%.2f", count*item.getPrice() - Main.getTax()*count*item.getPrice()) + " took a tax of " + String.format("%.2f",Main.getTax()*count*item.getPrice()));
-        Main.getEconomy().depositPlayer(originalPilot,count*item.getPrice());
+        originalPilot.sendMessage(CargoMain.SUCCES_TAG + "Unloaded " + count + " items for $" + String.format("%.2f", count*item.getPrice() - CargoMain.getTax()*count*item.getPrice()) + " took a tax of " + String.format("%.2f",CargoMain.getTax()*count*item.getPrice()));
+        CargoMain.getEconomy().depositPlayer(originalPilot,count*item.getPrice());
+        inv = Utils.firstInventory(craft, item.getItem(), Material.CHEST, Material.TRAPPED_CHEST);
+        if(inv == null){
+            this.cancel();
+            CargoMain.getQue().remove(originalPilot);
+            originalPilot.sendMessage(CargoMain.SUCCES_TAG + "All cargo unloaded");
+            return;
+        }
     }
 }

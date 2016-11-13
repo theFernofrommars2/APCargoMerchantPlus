@@ -37,7 +37,7 @@ import net.dandielo.citizens.traders_v3.traders.stock.StockItem;
 import net.dandielo.citizens.traders_v3.traits.TraderTrait;
 
 import net.milkbowl.vault.economy.Economy;
-public class Main extends JavaPlugin implements Listener {
+public class CargoMain extends JavaPlugin implements Listener {
     public static final String ERROR_TAG = ChatColor.RED + "Error: " + ChatColor.DARK_RED;
     public static final String SUCCES_TAG = ChatColor.DARK_AQUA + "Cargo: " + ChatColor.WHITE;
     public static Logger logger;
@@ -118,6 +118,11 @@ public class Main extends JavaPlugin implements Listener {
                 sender.sendMessage(ERROR_TAG + "You need to be a player to execute that command!");
                 return true;
             }
+
+            if(!sender.hasPermission("Cargo.unload")){
+                sender.sendMessage(ERROR_TAG + "You don't have permision to do that!");
+                return true;
+            }
             Player player = (Player) sender;
             Craft playerCraft = craftManager.getCraftByPlayer(player);
             if(playersInQue.contains(player)){
@@ -174,9 +179,13 @@ public class Main extends JavaPlugin implements Listener {
                 sender.sendMessage(ERROR_TAG + "You need to be a player to execute that command!");
                 return true;
             }
+
+            if(!sender.hasPermission("Cargo.load")){
+                sender.sendMessage(ERROR_TAG + "You don't have permision to do that!");
+                return true;
+            }
             Player player = (Player) sender;
             Craft playerCraft = craftManager.getCraftByPlayer(player);
-
             if(playersInQue.contains(player)){
                 sender.sendMessage(ERROR_TAG + "You're already moving cargo!");
                 return true;
@@ -247,8 +256,13 @@ public class Main extends JavaPlugin implements Listener {
             if (e.getClickedBlock().getType() == Material.SIGN || e.getClickedBlock().getType() == Material.SIGN_POST) {
                 Sign sign = (Sign) e.getClickedBlock().getState();
                 if (sign.getLine(0).equals(ChatColor.DARK_AQUA + "[UnLoad]")) {
-                    Craft playerCraft = craftManager.getCraftByPlayer(e.getPlayer());
                     Player player = e.getPlayer();
+                    if(!player.hasPermission("Cargo.unload")){
+                        player.sendMessage(ERROR_TAG + "You don't have permision to do that!");
+                        return;
+                    }
+
+                    Craft playerCraft = craftManager.getCraftByPlayer(e.getPlayer());
                     if(playersInQue.contains(player)){
                         player.sendMessage(ERROR_TAG + "You're already moving cargo!");
                         return;
@@ -299,8 +313,13 @@ public class Main extends JavaPlugin implements Listener {
                 }
 
                 if (sign.getLine(0).equals(ChatColor.DARK_AQUA + "[Load]")) {
-                    Craft playerCraft = craftManager.getCraftByPlayer(e.getPlayer());
                     Player player = e.getPlayer();
+                    if(!player.hasPermission("Cargo.load")){
+                        player.sendMessage(ERROR_TAG + "You don't have permision to do that!");
+                        return;
+                    }
+
+                    Craft playerCraft = craftManager.getCraftByPlayer(e.getPlayer());
                     if(playersInQue.contains(player)){
                         player.sendMessage(ERROR_TAG + "You're already moving cargo!");
                         return;

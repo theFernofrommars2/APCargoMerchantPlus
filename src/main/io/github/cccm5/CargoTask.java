@@ -20,8 +20,8 @@ public abstract class CargoTask extends BukkitRunnable
     protected final StockItem item;
     protected CargoTask(Craft craft, Stock stock, StockItem item){
         if (craft == null) {
-            if(Main.isDebug())
-                Main.logger.info("Initizalized CargoTask with craft type " + craft.getType() + ", scanning for StockItem " + item.getName() );
+            if(CargoMain.isDebug())
+                CargoMain.logger.info("Initizalized CargoTask with craft type " + craft.getType() + ", scanning for StockItem " + item.getName() );
             throw new IllegalArgumentException("craft must not be null");
         }
         else
@@ -41,28 +41,28 @@ public abstract class CargoTask extends BukkitRunnable
     @Override
     public void run() {
         if (CraftManager.getInstance().getCraftByPlayer(originalPilot)==null){
-            if(Main.isDebug())
-                Main.logger.info("canceling CargoTask due to missing player/craft");
-            Main.getQue().remove(originalPilot);
+            if(CargoMain.isDebug())
+                CargoMain.logger.info("canceling CargoTask due to missing player/craft");
+            CargoMain.getQue().remove(originalPilot);
             this.cancel();
             return;
         }
 
         if (CraftManager.getInstance().getPlayerFromCraft(craft)!=originalPilot ){
             originalPilot.sendMessage("Pilots changed!");
-            Main.getQue().remove(originalPilot);
+            CargoMain.getQue().remove(originalPilot);
             this.cancel();
             return;
         }
 
         if(!Arrays.deepEquals(craft.getBlockList(), originalLocations)) { 
             originalPilot.sendMessage("Blocks moved/changed!");
-            Main.getQue().remove(originalPilot);
+            CargoMain.getQue().remove(originalPilot);
             this.cancel();
             return;
         }
-        if(Main.isDebug())
-            Main.logger.info("Running execute method for CargoTask with address " + this + ". Pilot: " + originalPilot.getName() + " CraftSize: " + originalLocations.length + " CraftType: " + craft.getType() + " StockItem: " + item.getName());
+        if(CargoMain.isDebug())
+            CargoMain.logger.info("Running execute method for CargoTask with address " + this + ". Pilot: " + originalPilot.getName() + " CraftSize: " + originalLocations.length + " CraftType: " + craft.getType() + " StockItem: " + item.getName());
         execute();
     }
 
