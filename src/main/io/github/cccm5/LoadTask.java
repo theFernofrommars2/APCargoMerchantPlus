@@ -1,6 +1,9 @@
 package io.github.cccm5;
 
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.Inventory;
 
 import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.craft.CraftManager;
@@ -18,11 +21,20 @@ public class LoadTask extends CargoTask
         //************************
         //*     To Implement     *
         //************************
-        //check if there's any chests with space for the cargo, cancel if false
-        //get the first chest with space
+        //check if there's any chests with space for the cargo, cancel if false - done
+        //get the first chest with space - done
         //get the price to fill the chest
         //if greater than the players balance, fill until balance depleted
         //add the items to chest
         //charge user price of cargo plus tax
+        Inventory inv = Utils.firstInventoryWithSpace(craft, item.getItem(), Material.CHEST,Material.TRAPPED_CHEST);
+        if(inv == null){
+            this.cancel();
+            return;
+        }
+        //FOR TESTING ONLY
+        for(ItemStack i : inv){
+            i = item.getItem().clone();
+        }
     }
 }

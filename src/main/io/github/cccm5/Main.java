@@ -98,9 +98,6 @@ public class Main extends JavaPlugin implements Listener {
 
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) { // Plugin
         if (command.getName().equalsIgnoreCase("unload")) {
-            //************************
-            //*     To Implement     *
-            //************************
             if(!(sender instanceof Player)){
                 sender.sendMessage(ERROR_TAG + "You need to be a player to execute that command!");
                 return true;
@@ -118,10 +115,6 @@ public class Main extends JavaPlugin implements Listener {
                 if(!npc.isSpawned())
                     continue;
                 distance = cardinalDistance ? Math.abs(loc.getX()-npc.getEntity().getLocation().getX()) + Math.abs(loc.getX()-npc.getEntity().getLocation().getX()) : Math.sqrt(Math.pow(loc.getX()-npc.getEntity().getLocation().getX(),2) + Math.pow(loc.getX()-npc.getEntity().getLocation().getX(),2));
-                //if(cardinalDistance)
-                //    distance = Math.abs(loc.getX()-npc.getEntity().getLocation().getX()) + Math.abs(loc.getX()-npc.getEntity().getLocation().getX());
-                //else
-                //    distance = Math.sqrt(Math.pow(loc.getX()-npc.getEntity().getLocation().getX(),2) + Math.pow(loc.getX()-npc.getEntity().getLocation().getX(),2));
                 if( distance <= lastScan){
                     lastScan = distance;
                     cargoMerchant = npc;
@@ -131,7 +124,7 @@ public class Main extends JavaPlugin implements Listener {
                 sender.sendMessage(ERROR_TAG + "You need to be within " +  scanRange + " blocks of a merchant to use that command!");
                 return true;
             }
-            
+
             Stock stock = cargoMerchant.getTrait(TraderTrait.class).getStock();
             StockItem compareItem = new StockItem(player.getInventory().getItemInMainHand().clone()), finalItem=null;
             for(StockItem tempItem : stock.getStock("sell"))
@@ -148,16 +141,11 @@ public class Main extends JavaPlugin implements Listener {
         }
 
         if (command.getName().equalsIgnoreCase("load")) {
-            //************************
-            //*     To Implement     *
-            //************************
-
             if(!(sender instanceof Player)){
                 sender.sendMessage(ERROR_TAG + "You need to be a player to execute that command!");
                 return true;
             }
             Player player = (Player) sender;
-
             Craft playerCraft = craftManager.getCraftByPlayer(player);
             if(playerCraft == null){
                 sender.sendMessage(ERROR_TAG + "You need to be piloting a craft to do that!");
@@ -170,10 +158,6 @@ public class Main extends JavaPlugin implements Listener {
                 if(!npc.isSpawned())
                     continue;
                 distance = cardinalDistance ? Math.abs(loc.getX()-npc.getEntity().getLocation().getX()) + Math.abs(loc.getX()-npc.getEntity().getLocation().getX()) : Math.sqrt(Math.pow(loc.getX()-npc.getEntity().getLocation().getX(),2) + Math.pow(loc.getX()-npc.getEntity().getLocation().getX(),2));
-                //if(cardinalDistance)
-                //    distance = Math.abs(loc.getX()-npc.getEntity().getLocation().getX()) + Math.abs(loc.getX()-npc.getEntity().getLocation().getX());
-                //else
-                //    distance = Math.sqrt(Math.pow(loc.getX()-npc.getEntity().getLocation().getX(),2) + Math.pow(loc.getX()-npc.getEntity().getLocation().getX(),2));
                 if( distance <= lastScan){
                     lastScan = distance;
                     cargoMerchant = npc;
@@ -183,7 +167,7 @@ public class Main extends JavaPlugin implements Listener {
                 sender.sendMessage(ERROR_TAG + "You need to be within " +  scanRange + " blocks of a merchant to use that command!");
                 return true;
             }
-            
+
             Stock stock = cargoMerchant.getTrait(TraderTrait.class).getStock();
             StockItem compareItem = new StockItem(player.getInventory().getItemInMainHand().clone()), finalItem=null;
             for(StockItem tempItem : stock.getStock("buy"))
@@ -195,8 +179,7 @@ public class Main extends JavaPlugin implements Listener {
                 sender.sendMessage(ERROR_TAG + "You need to be holding a cargo item to do that!");
                 return true;
             }
-            new UnloadTask(craftManager.getCraftByPlayer(player),stock,finalItem ).runTaskTimer(this,10,10);
-            new LoadTask(craftManager.getCraftByPlayer(player),cargoMerchant.getTrait(TraderTrait.class).getStock(),null ).runTaskTimer(this,10,10);
+            new LoadTask(craftManager.getCraftByPlayer(player),stock,finalItem ).runTaskTimer(this,10,10);
             return true;
         }
         return false;

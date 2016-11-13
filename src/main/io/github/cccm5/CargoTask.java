@@ -11,11 +11,11 @@ import net.dandielo.citizens.traders_v3.traders.stock.Stock;
 import net.dandielo.citizens.traders_v3.traders.stock.StockItem;
 public abstract class CargoTask extends BukkitRunnable 
 {
-    private Craft craft;
-    private final MovecraftLocation[] originalLocations;
-    private final Player originalPilot;
-    private Stock stock;
-    private final StockItem item;
+    protected Craft craft;
+    protected final MovecraftLocation[] originalLocations;
+    protected final Player originalPilot;
+    protected Stock stock;
+    protected final StockItem item;
     protected CargoTask(Craft craft, Stock stock, StockItem item){
         if (craft == null) 
             throw new IllegalArgumentException("craft must not be null");
@@ -35,13 +35,13 @@ public abstract class CargoTask extends BukkitRunnable
 
     @Override
     public void run() {
-        if (CraftManager.getInstance().getPlayerFromCraft(craft)==null){
+        if (CraftManager.getInstance().getCraftByPlayer(originalPilot)==null){
             this.cancel();
             return;
         }
 
         if (CraftManager.getInstance().getPlayerFromCraft(craft)!=originalPilot ){
-            originalPilot.sendMessage("Pilots chaned!");
+            originalPilot.sendMessage("Pilots changed!");
             this.cancel();
             return;
         }

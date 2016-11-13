@@ -1,6 +1,8 @@
 package io.github.cccm5;
 
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 
 import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.craft.CraftManager;
@@ -18,9 +20,16 @@ public class UnloadTask extends CargoTask
         //************************
         //*     To Implement     *
         //************************
-        //check if there's any chests with cargo, cancel if true
-        //get the first chest with cargo
+        //check if there's any chests with cargo, cancel if false - done
+        //get the first chest with cargo - done
         //get the price of all the cargo
         //remove the items, pay the user while taking a tax
+        Inventory inv = Utils.firstInventory(craft, item.getItem(), Material.CHEST, Material.TRAPPED_CHEST);
+        if(inv == null){
+            this.cancel();
+            return;
+        }
+        //FOR TESTING ONLY
+        inv.clear();
     }
 }
