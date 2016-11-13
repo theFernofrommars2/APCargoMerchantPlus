@@ -225,6 +225,17 @@ public class Main extends JavaPlugin implements Listener {
             sender.sendMessage(SUCCES_TAG + "Started loading cargo");
             return true;
         }
+
+        if (command.getName().equalsIgnoreCase("cargo")) {
+            sender.sendMessage( ChatColor.WHITE + "--[ " + ChatColor.DARK_AQUA + "  Movecraft Cargo " + ChatColor.WHITE + " ]--");
+            sender.sendMessage(ChatColor.DARK_AQUA + "Scan Range: " + ChatColor.WHITE + scanRange + " Blocks");
+            sender.sendMessage(ChatColor.DARK_AQUA + "Transfer Delay: " + ChatColor.WHITE + delay + " ticks");
+            sender.sendMessage(ChatColor.DARK_AQUA + "Tax: " + ChatColor.WHITE + 100*tax + "%");
+            if(cardinalDistance)
+                sender.sendMessage(ChatColor.DARK_AQUA + "Distance Type: " + ChatColor.WHITE + "Cardinal");
+            else
+                sender.sendMessage(ChatColor.DARK_AQUA + "Distance Type: " + ChatColor.WHITE + "Direct");
+        }
         return false;
 
     }
@@ -234,7 +245,7 @@ public class Main extends JavaPlugin implements Listener {
         if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
             if (e.getClickedBlock().getType() == Material.SIGN || e.getClickedBlock().getType() == Material.SIGN_POST) {
                 Sign sign = (Sign) e.getClickedBlock().getState();
-                if (sign.getLine(0).equals(ChatColor.GREEN + "[UnLoad]")) {
+                if (sign.getLine(0).equals(ChatColor.DARK_AQUA + "[UnLoad]")) {
                     Craft playerCraft = craftManager.getCraftByPlayer(e.getPlayer());
                     Player player = e.getPlayer();
                     if(playersInQue.contains(player)){
@@ -286,7 +297,7 @@ public class Main extends JavaPlugin implements Listener {
                     return;
                 }
 
-                if (sign.getLine(0).equals(ChatColor.GREEN + "[Load]")) {
+                if (sign.getLine(0).equals(ChatColor.DARK_AQUA + "[Load]")) {
                     Craft playerCraft = craftManager.getCraftByPlayer(e.getPlayer());
                     Player player = e.getPlayer();
                     if(playersInQue.contains(player)){
@@ -345,7 +356,7 @@ public class Main extends JavaPlugin implements Listener {
     public void onSignPlace(SignChangeEvent e){
         if(e.getBlock().getType().equals(Material.SIGN) || e.getBlock().getType().equals(Material.WALL_SIGN) || e.getBlock().getType().equals(Material.SIGN_POST)){
             if(ChatColor.stripColor(e.getLine(0)).equalsIgnoreCase("[Load]") || ChatColor.stripColor(e.getLine(0)).equalsIgnoreCase("[UnLoad]")){
-                e.setLine(0,ChatColor.DARK_AQUA + ChatColor.stripColor(e.getLine(0)));
+                e.setLine(0,ChatColor.DARK_AQUA + (ChatColor.stripColor(e.getLine(0))).replaceAll("u","U").replaceAll("l","L"));
             }
         }
     }
