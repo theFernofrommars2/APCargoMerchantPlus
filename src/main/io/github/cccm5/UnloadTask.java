@@ -38,7 +38,7 @@ public class UnloadTask extends CargoTask
                 inv.setItem(i,null);
             }
         }
-        originalPilot.sendMessage(Main.SUCCES_TAG + "Sold " + count + " items for $" + String.format("%.2f", count*item.getPrice()));
+        originalPilot.sendMessage(Main.SUCCES_TAG + "Sold " + count + " items for $" + String.format("%.2f", count*item.getPrice() - Main.getTax()*count*item.getPrice()) + " took a tax of " + String.format("%.2f",Main.getTax()*count*item.getPrice()));
         Main.getEconomy().depositPlayer(originalPilot,count*item.getPrice());
     }
 }

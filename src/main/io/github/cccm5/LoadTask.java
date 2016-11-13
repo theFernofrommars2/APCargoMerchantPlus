@@ -55,13 +55,13 @@ public class LoadTask extends CargoTask
                     loaded+=maxCount;
                     this.cancel();
                     Main.getQue().remove(originalPilot);
-                    originalPilot.sendMessage(Main.SUCCES_TAG + "Sold " + loaded + " items for $" + String.format("%.2f", loaded*item.getPrice()));
+                    originalPilot.sendMessage(Main.SUCCES_TAG + "Sold " + loaded + " items for $" + String.format("%.2f", loaded*item.getPrice() - Main.getTax()*loaded*item.getPrice()) + " took a tax of " + String.format("%.2f",Main.getTax()*loaded*item.getPrice()));
                     originalPilot.sendMessage(Main.SUCCES_TAG + "You ran out of money!");
                     break;
                 }
             }
 
-        originalPilot.sendMessage(Main.SUCCES_TAG + "Sold " + loaded + " items for $" + String.format("%.2f", loaded*item.getPrice()));
+        originalPilot.sendMessage(Main.SUCCES_TAG + "Sold " + loaded + " items for $" + String.format("%.2f", loaded*item.getPrice() - Main.getTax()*loaded*item.getPrice()) + " took a tax of " + String.format("%.2f",Main.getTax()*loaded*item.getPrice()));
         Main.getEconomy().withdrawPlayer(originalPilot,loaded*item.getPrice());
     }
 }

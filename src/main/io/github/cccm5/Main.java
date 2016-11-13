@@ -43,12 +43,14 @@ public class Main extends JavaPlugin implements Listener {
     public static Logger logger;
     private static Economy economy;
     private static ArrayList<Player> playersInQue;
+    private static double tax;
 
     private CraftManager craftManager;
     private FileConfiguration config;
     private boolean cardinalDistance;
     private static boolean debug;
     private double scanRange;
+    private int delay;//ticks
     public void onEnable() {
         logger = this.getLogger();
         this.getServer().getPluginManager().registerEvents(this, this);
@@ -58,11 +60,15 @@ public class Main extends JavaPlugin implements Listener {
         //************************
         config = getConfig();
         config.addDefault("Scan range",100.0);
+        config.addDefault("Transfer delay ticks",300);
+        config.addDefault("Transfer tax percent", 0.01D);
         config.addDefault("Cardinal distance",true);
         config.addDefault("Debug mode",false);
         config.options().copyDefaults(true);
         this.saveConfig();
-        scanRange = config.getDouble("Scan range");
+        scanRange = config.getDouble("Scan range") >= 1.0 ? config.getDouble("Scan range") : 100.0;
+        delay = config.getInt("Transfer delay ticks");
+        tax = config.getDouble("Transfer tax percent")<=1.0 && config.getDouble("Transfer tax")>=0.0 ? config.getDouble("Transfer tax") : 0.01;
         cardinalDistance = config.getBoolean("Cardinal distance");
         debug = config.getBoolean("Debug mode");
         //************************
@@ -159,7 +165,7 @@ public class Main extends JavaPlugin implements Listener {
 
             sender.sendMessage(SUCCES_TAG + "Started unloading cargo");
             playersInQue.add(player);
-            new UnloadTask(craftManager.getCraftByPlayer(player),stock,finalItem ).runTaskTimer(this,10,10);
+            new UnloadTask(craftManager.getCraftByPlayer(player),stock,finalItem ).runTaskTimer(this,delay,delay);
             return true;
         }
 
@@ -215,7 +221,7 @@ public class Main extends JavaPlugin implements Listener {
             }
 
             playersInQue.add(player);
-            new LoadTask(craftManager.getCraftByPlayer(player),stock,finalItem ).runTaskTimer(this,10,10);
+            new LoadTask(craftManager.getCraftByPlayer(player),stock,finalItem ).runTaskTimer(this,delay,delay);
             sender.sendMessage(SUCCES_TAG + "Started loading cargo");
             return true;
         }
@@ -276,7 +282,7 @@ public class Main extends JavaPlugin implements Listener {
 
                     player.sendMessage(SUCCES_TAG + "Started unloading cargo");
                     playersInQue.add(player);
-                    new UnloadTask(craftManager.getCraftByPlayer(player),stock,finalItem ).runTaskTimer(this,10,10);
+                    new UnloadTask(craftManager.getCraftByPlayer(player),stock,finalItem ).runTaskTimer(this,delay,delay);
                     return;
                 }
 
@@ -327,7 +333,7 @@ public class Main extends JavaPlugin implements Listener {
                     }
 
                     playersInQue.add(player);
-                    new LoadTask(craftManager.getCraftByPlayer(player),stock,finalItem ).runTaskTimer(this,10,10);
+                    new LoadTask(craftManager.getCraftByPlayer(player),stock,finalItem ).runTaskTimer(this,delay,delay);
                     player.sendMessage(SUCCES_TAG + "Started loading cargo");
                     return;
                 }
@@ -354,6 +360,10 @@ public class Main extends JavaPlugin implements Listener {
 
     public static List<Player> getQue(){
         return playersInQue;
+    }
+
+    public static double getTax(){
+        return tax;
     }
 
 }
