@@ -144,10 +144,11 @@ public class Main extends JavaPlugin implements Listener {
                     finalItem = tempItem;
                     break;
                 }
-            if(finalItem == null){
+            if(finalItem == null || !finalItem.hasPrice()){
                 sender.sendMessage(ERROR_TAG + "You need to be holding a cargo item to do that!");
                 return true;
             }
+
             sender.sendMessage(SUCCES_TAG + "Started unloading cargo");
             new UnloadTask(craftManager.getCraftByPlayer(player),stock,finalItem ).runTaskTimer(this,10,10);
             return true;
@@ -193,7 +194,7 @@ public class Main extends JavaPlugin implements Listener {
                     finalItem = tempItem;
                     break;
                 }
-            if(finalItem == null){
+            if(finalItem == null  || !finalItem.hasPrice()){
                 sender.sendMessage(ERROR_TAG + "You need to be holding a cargo item to do that!");
                 return true;
             }

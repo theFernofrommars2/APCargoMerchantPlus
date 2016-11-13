@@ -34,10 +34,27 @@ public class LoadTask extends CargoTask
             return;
         }
         //FOR TESTING ONLY
-        for(int i =0; i < inv.getSize() ; i++){
-            ItemStack tempItem = item.getItem().clone();
-            tempItem.setAmount(tempItem.getMaxStackSize());
-            inv.setItem(i,tempItem);
-        }
+        int loaded=0;
+        for(int i =0; i < inv.getSize() ; i++)
+            if(inv.getItem(i).isSimilar(item.getItem()))
+                if(Main.getEconomy().has(originalPilot,item.getPrice()*(inv.getItem(i).getMaxStackSize() - inv.getItem(i).getAmount()))){
+                    loaded+=inv.getItem(i).getMaxStackSize() - inv.getItem(i).getAmount();
+                    ItemStack tempItem = item.getItem().clone();
+                    tempItem.setAmount(tempItem.getMaxStackSize());
+                    inv.setItem(i,tempItem);
+                }else{
+                    int maxCount = (int)(Main.getEconomy().getBalance(originalPilot)/item.getPrice());
+                    ItemStack tempItem = item.getItem().clone();
+                    tempItem.setAmount(inv.getItem(i).getAmount()+maxCount);
+                    inv.setItem(i,tempItem);
+                    loaded+=maxCount;
+                    this.cancel();
+                    originalPilot.sendMessage(Main.SUCCES_TAG + "Sold " + loaded + " items for $" + String.format("%.2f", loaded*item.getPrice()));
+                    originalPilot.sendMessage(Main.SUCCES_TAG + "You ran out of money!");
+                    break;
+                }
+                
+        originalPilot.sendMessage(Main.SUCCES_TAG + "Sold " + loaded + " items for $" + String.format("%.2f", loaded*item.getPrice()));
+        Main.getEconomy().withdrawPlayer(originalPilot,loaded*item.getPrice());
     }
 }

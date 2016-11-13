@@ -30,7 +30,6 @@ public class UnloadTask extends CargoTask
             originalPilot.sendMessage(Main.SUCCES_TAG + "All cargo unloaded");
             return;
         }
-        //FOR TESTING ONLY
         int count = 0;
         for(int i = 0; i<inv.getSize();i++){
             if(inv.getItem(i).isSimilar(item.getItem())){
