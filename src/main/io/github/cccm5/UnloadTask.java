@@ -32,7 +32,7 @@ public class UnloadTask extends CargoTask
         }
         int count = 0;
         for(int i = 0; i<inv.getSize();i++){
-            if(inv.getItem(i).isSimilar(item.getItem())){
+            if(inv.getItem(i) != null && inv.getItem(i).isSimilar(item.getItem())){
                 count+=inv.getItem(i).getAmount();
                 inv.setItem(i,null);
             }
