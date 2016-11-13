@@ -1,5 +1,7 @@
 package io.github.cccm5;
 
+import java.util.Arrays;
+
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -46,7 +48,7 @@ public abstract class CargoTask extends BukkitRunnable
             return;
         }
 
-        if( craft.getBlockList() != originalLocations) { 
+        if(!Arrays.deepEquals(craft.getBlockList(), originalLocations)) { 
             originalPilot.sendMessage("Blocks moved/changed!");
             this.cancel();
             return;
