@@ -30,6 +30,7 @@ public class LoadTask extends CargoTask
         Inventory inv = Utils.firstInventoryWithSpace(craft, item.getItem(), Material.CHEST,Material.TRAPPED_CHEST);
         if(inv == null){
             this.cancel();
+            Main.getQue().remove(originalPilot);
             originalPilot.sendMessage(Main.SUCCES_TAG + "All cargo loaded");
             return;
         }
@@ -53,6 +54,7 @@ public class LoadTask extends CargoTask
                     inv.setItem(i,tempItem);
                     loaded+=maxCount;
                     this.cancel();
+                    Main.getQue().remove(originalPilot);
                     originalPilot.sendMessage(Main.SUCCES_TAG + "Sold " + loaded + " items for $" + String.format("%.2f", loaded*item.getPrice()));
                     originalPilot.sendMessage(Main.SUCCES_TAG + "You ran out of money!");
                     break;
