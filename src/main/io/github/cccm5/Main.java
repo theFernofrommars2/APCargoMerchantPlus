@@ -74,7 +74,7 @@ public class Main extends JavaPlugin implements Listener {
             logger.log(Level.SEVERE, "Citizens 2.0 not found or not enabled");
             getServer().getPluginManager().disablePlugin(this);	
             return;
-        }	     
+        }
         net.citizensnpcs.api.CitizensAPI.getTraitFactory().registerTrait(net.citizensnpcs.api.trait.TraitInfo.create(CargoTrait.class));
         //************************
         //*      Load Vault      *
@@ -94,6 +94,8 @@ public class Main extends JavaPlugin implements Listener {
     }
 
     public void onDisable() {
+        net.citizensnpcs.api.CitizensAPI.getTraitFactory().deregisterTrait(net.citizensnpcs.api.trait.TraitInfo.create(CargoTrait.class));
+        
     }
 
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) { // Plugin
