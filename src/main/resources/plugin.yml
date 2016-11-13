@@ -9,9 +9,9 @@ commands:
     unload:
         description: unloads cargo
         permission: Cargo.unload
-    cargo: Cargo.cargo
+    cargo:
         description: get information about the plugin
-        permission:
+        permission: Cargo.cargo
 permissions:
     Cargo.load:
         description: Allows users to load cargo
