@@ -135,9 +135,10 @@ public class Main extends JavaPlugin implements Listener {
                 return true;
             }
             Stock stock = cargoMerchant.getTrait(TraderTrait.class).getStock();
-            StockItem compareItem = new StockItem(player.getInventory().getItemInMainHand().clone()), finalItem=null;
+            ItemStack compareItem = player.getInventory().getItemInMainHand().clone();
+            StockItem finalItem=null;
             for(StockItem tempItem : stock.getStock("sell"))
-                if(tempItem.similar(tempItem)){
+                if(tempItem.getItem().isSimilar(compareItem)){
                     finalItem = tempItem;
                     break;
                 }
@@ -183,9 +184,10 @@ public class Main extends JavaPlugin implements Listener {
                 return true;
             }
             Stock stock = cargoMerchant.getTrait(TraderTrait.class).getStock();
-            StockItem compareItem = new StockItem(player.getInventory().getItemInMainHand().clone()), finalItem=null;
+            ItemStack compareItem = player.getInventory().getItemInMainHand().clone();
+            StockItem finalItem=null;
             for(StockItem tempItem : stock.getStock("buy"))
-                if(tempItem.similar(tempItem)){
+                if(tempItem.getItem().isSimilar(compareItem)){
                     finalItem = tempItem;
                     break;
                 }
