@@ -68,7 +68,7 @@ public class Main extends JavaPlugin implements Listener {
         this.saveConfig();
         scanRange = config.getDouble("Scan range") >= 1.0 ? config.getDouble("Scan range") : 100.0;
         delay = config.getInt("Transfer delay ticks");
-        tax = config.getDouble("Transfer tax percent")<=1.0 && config.getDouble("Transfer tax")>=0.0 ? config.getDouble("Transfer tax") : 0.01;
+        tax = config.getDouble("Transfer tax percent");
         cardinalDistance = config.getBoolean("Cardinal distance");
         debug = config.getBoolean("Debug mode");
         //************************
@@ -235,6 +235,7 @@ public class Main extends JavaPlugin implements Listener {
                 sender.sendMessage(ChatColor.DARK_AQUA + "Distance Type: " + ChatColor.WHITE + "Cardinal");
             else
                 sender.sendMessage(ChatColor.DARK_AQUA + "Distance Type: " + ChatColor.WHITE + "Direct");
+            return true;
         }
         return false;
 
