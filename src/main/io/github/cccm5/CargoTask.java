@@ -20,9 +20,8 @@ public abstract class CargoTask extends BukkitRunnable
     protected final StockItem item;
     protected CargoTask(Craft craft, Stock stock, StockItem item){
         if (craft == null) {
-            if(Main.isDebug()){
-
-            }
+            if(Main.isDebug())
+                Main.logger.info("Initizalized CargoTask with craft type " + craft.getType() + ", scanning for StockItem " + item.getName() );
             throw new IllegalArgumentException("craft must not be null");
         }
         else
@@ -42,6 +41,8 @@ public abstract class CargoTask extends BukkitRunnable
     @Override
     public void run() {
         if (CraftManager.getInstance().getCraftByPlayer(originalPilot)==null){
+            if(Main.isDebug())
+                Main.logger.info("canceling CargoTask due to missing player/craft");
             this.cancel();
             return;
         }
@@ -57,7 +58,9 @@ public abstract class CargoTask extends BukkitRunnable
             this.cancel();
             return;
         }
-
+        if(Main.isDebug())
+            Main.logger.info("Running execute method for CargoTask with address " + this + ". Pilot: " + originalPilot.getName() + " CraftSize: " + originalLocations.length + " CraftType: " + craft.getType() + " StockItem: " + item.getName());
+        
         execute();
     }
 
