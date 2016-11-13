@@ -15,6 +15,8 @@ import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.utils.MovecraftLocation;
 
 import net.citizensnpcs.api.npc.NPC;
+import net.citizensnpcs.api.npc.NPCRegistry;
+import net.citizensnpcs.api.trait.Trait;
 public class Utils
 {
     private static final Material[] INVENTORY_MATERIALS = new Material[]{Material.CHEST,Material.TRAPPED_CHEST, Material.FURNACE, Material.HOPPER,Material.DROPPER,Material.DISPENSER, Material.BREWING_STAND};
@@ -147,8 +149,13 @@ public class Utils
         }
         return count;
     }
-    
-    public static NPC[] getAllWithTrait(Class c){
-        return null;
+
+    public static ArrayList<NPC> getNPCsWithTrait(Class<? extends Trait> c){
+        ArrayList<NPC> npcs = new ArrayList<NPC>();
+        for(NPCRegistry registry : net.citizensnpcs.api.CitizensAPI.getNPCRegistries())
+            for(NPC npc : registry)
+                if(npc.hasTrait(c))
+                    npcs.add(npc);
+        return npcs;
     }
 }

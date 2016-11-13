@@ -1,15 +1,19 @@
 package io.github.cccm5;
 
+import java.lang.Math;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
+import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.block.Sign;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Sign;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -21,36 +25,178 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import net.citizensnpcs.api.npc.NPC;
+
 import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.craft.CraftManager;
 import net.countercraft.movecraft.utils.MovecraftLocation;
+
+import net.dandielo.citizens.traders_v3.traders.stock.Stock;
+import net.dandielo.citizens.traders_v3.traders.stock.StockItem;
+import net.dandielo.citizens.traders_v3.traits.TraderTrait;
+
+import net.milkbowl.vault.economy.Economy;
 public class Main extends JavaPlugin implements Listener {
+    private static final String ERROR_TAG = ChatColor.RED + "Error: " + ChatColor.DARK_RED;
+    private static final String SUCCES_TAG = ChatColor.DARK_AQUA + "Cargo: " + ChatColor.WHITE;
     private CraftManager craftManager;
+    private static Economy economy;
+    private Logger logger;
+    private FileConfiguration config;
+    private boolean cardinalDistance;
+    private double scanRange;
     public void onEnable() {
+        logger = this.getLogger();
         this.getServer().getPluginManager().registerEvents(this, this);
+        //************************
+        //*       Configs        *
+        //************************
+        config = getConfig();
+        config.addDefault("Scan range",100.0);
+        config.addDefault("Cardinal distance",true);
+        config.options().copyDefaults(true);
+        this.saveConfig();
+        scanRange = config.getDouble("Scan range");
+        cardinalDistance = config.getBoolean("Cardinal distance");
+        //************************
+        //*    Load Movecraft    *
+        //************************
+        if(getServer().getPluginManager().getPlugin("Movecraft") == null || getServer().getPluginManager().getPlugin("Movecraft").isEnabled() == false) {
+            logger.log(Level.SEVERE, "Movecraft not found or not enabled");
+            getServer().getPluginManager().disablePlugin(this);	
+            return;
+        }	
         craftManager = CraftManager.getInstance();
+        //************************
+        //*    Load  Citizens    *
+        //************************
+        if(getServer().getPluginManager().getPlugin("Citizens") == null || getServer().getPluginManager().getPlugin("Citizens").isEnabled() == false) {
+            logger.log(Level.SEVERE, "Citizens 2.0 not found or not enabled");
+            getServer().getPluginManager().disablePlugin(this);	
+            return;
+        }	     
+        net.citizensnpcs.api.CitizensAPI.getTraitFactory().registerTrait(net.citizensnpcs.api.trait.TraitInfo.create(CargoTrait.class));
+        //************************
+        //*      Load Vault      *
+        //************************
+        if (getServer().getPluginManager().getPlugin("Vault") == null || getServer().getPluginManager().getPlugin("Citizens").isEnabled() == false) {
+            logger.log(Level.SEVERE, "Vault not found or not enabled");
+            getServer().getPluginManager().disablePlugin(this);	
+            return;
+        } 
+        org.bukkit.plugin.RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+        if (rsp == null) {
+            logger.info("[AP-Merchant] Could not find compatible Vault plugin. Disabling Vault integration.");			
+            getServer().getPluginManager().disablePlugin(this);	
+            return;
+        }
+        economy = rsp.getProvider();
     }
 
     public void onDisable() {
-
     }
 
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) { // Plugin
-        Player player = (Player) sender;
-        if (command.getName().equalsIgnoreCase("unload") && sender instanceof Player) {
+        if (command.getName().equalsIgnoreCase("unload")) {
             //************************
             //*     To Implement     *
             //************************
-            //check if there any npcs with cargo trait
-            new UnloadTask(craftManager.getCraftByPlayer(player)).runTaskTimer(this,10,10);
+            if(!(sender instanceof Player)){
+                sender.sendMessage(ERROR_TAG + "You need to be a player to execute that command!");
+                return true;
+            }
+            Player player = (Player) sender;
+            Craft playerCraft = craftManager.getCraftByPlayer(player);
+            if(playerCraft == null){
+                sender.sendMessage(ERROR_TAG + "You need to be piloting a craft to do that!");
+                return true;
+            }
+            NPC cargoMerchant=null;
+            double distance, lastScan = scanRange;
+            MovecraftLocation loc = playerCraft.getBlockList()[0];
+            for(NPC npc :Utils.getNPCsWithTrait(CargoTrait.class)){
+                if(!npc.isSpawned())
+                    continue;
+                distance = cardinalDistance ? Math.abs(loc.getX()-npc.getEntity().getLocation().getX()) + Math.abs(loc.getX()-npc.getEntity().getLocation().getX()) : Math.sqrt(Math.pow(loc.getX()-npc.getEntity().getLocation().getX(),2) + Math.pow(loc.getX()-npc.getEntity().getLocation().getX(),2));
+                //if(cardinalDistance)
+                //    distance = Math.abs(loc.getX()-npc.getEntity().getLocation().getX()) + Math.abs(loc.getX()-npc.getEntity().getLocation().getX());
+                //else
+                //    distance = Math.sqrt(Math.pow(loc.getX()-npc.getEntity().getLocation().getX(),2) + Math.pow(loc.getX()-npc.getEntity().getLocation().getX(),2));
+                if( distance <= lastScan){
+                    lastScan = distance;
+                    cargoMerchant = npc;
+                }
+            }
+            if(cargoMerchant == null){
+                sender.sendMessage(ERROR_TAG + "You need to be within " +  scanRange + " blocks of a merchant to use that command!");
+                return true;
+            }
+            
+            Stock stock = cargoMerchant.getTrait(TraderTrait.class).getStock();
+            StockItem compareItem = new StockItem(player.getInventory().getItemInMainHand().clone()), finalItem=null;
+            for(StockItem tempItem : stock.getStock("sell"))
+                if(tempItem.similar(tempItem)){
+                    finalItem = tempItem;
+                    break;
+                }
+            if(finalItem == null){
+                sender.sendMessage(ERROR_TAG + "You need to be holding a cargo item to do that!");
+                return true;
+            }
+            new UnloadTask(craftManager.getCraftByPlayer(player),stock,finalItem ).runTaskTimer(this,10,10);
             return true;
         }
-        if (command.getName().equalsIgnoreCase("load") && sender instanceof Player) {
+
+        if (command.getName().equalsIgnoreCase("load")) {
             //************************
             //*     To Implement     *
             //************************
-            //check if there any npcs with cargo trait
-            new LoadTask(craftManager.getCraftByPlayer(player)).runTaskTimer(this,10,10);
+
+            if(!(sender instanceof Player)){
+                sender.sendMessage(ERROR_TAG + "You need to be a player to execute that command!");
+                return true;
+            }
+            Player player = (Player) sender;
+
+            Craft playerCraft = craftManager.getCraftByPlayer(player);
+            if(playerCraft == null){
+                sender.sendMessage(ERROR_TAG + "You need to be piloting a craft to do that!");
+                return true;
+            }
+            NPC cargoMerchant=null;
+            double distance, lastScan = scanRange;
+            MovecraftLocation loc = playerCraft.getBlockList()[0];
+            for(NPC npc :Utils.getNPCsWithTrait(CargoTrait.class)){
+                if(!npc.isSpawned())
+                    continue;
+                distance = cardinalDistance ? Math.abs(loc.getX()-npc.getEntity().getLocation().getX()) + Math.abs(loc.getX()-npc.getEntity().getLocation().getX()) : Math.sqrt(Math.pow(loc.getX()-npc.getEntity().getLocation().getX(),2) + Math.pow(loc.getX()-npc.getEntity().getLocation().getX(),2));
+                //if(cardinalDistance)
+                //    distance = Math.abs(loc.getX()-npc.getEntity().getLocation().getX()) + Math.abs(loc.getX()-npc.getEntity().getLocation().getX());
+                //else
+                //    distance = Math.sqrt(Math.pow(loc.getX()-npc.getEntity().getLocation().getX(),2) + Math.pow(loc.getX()-npc.getEntity().getLocation().getX(),2));
+                if( distance <= lastScan){
+                    lastScan = distance;
+                    cargoMerchant = npc;
+                }
+            }
+            if(cargoMerchant == null){
+                sender.sendMessage(ERROR_TAG + "You need to be within " +  scanRange + " blocks of a merchant to use that command!");
+                return true;
+            }
+            
+            Stock stock = cargoMerchant.getTrait(TraderTrait.class).getStock();
+            StockItem compareItem = new StockItem(player.getInventory().getItemInMainHand().clone()), finalItem=null;
+            for(StockItem tempItem : stock.getStock("buy"))
+                if(tempItem.similar(tempItem)){
+                    finalItem = tempItem;
+                    break;
+                }
+            if(finalItem == null){
+                sender.sendMessage(ERROR_TAG + "You need to be holding a cargo item to do that!");
+                return true;
+            }
+            new UnloadTask(craftManager.getCraftByPlayer(player),stock,finalItem ).runTaskTimer(this,10,10);
+            new LoadTask(craftManager.getCraftByPlayer(player),cargoMerchant.getTrait(TraderTrait.class).getStock(),null ).runTaskTimer(this,10,10);
             return true;
         }
         return false;

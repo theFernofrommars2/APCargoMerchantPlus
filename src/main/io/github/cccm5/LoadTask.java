@@ -6,10 +6,12 @@ import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.craft.CraftManager;
 import net.countercraft.movecraft.utils.MovecraftLocation;
 
+import net.dandielo.citizens.traders_v3.traders.stock.Stock;
+import net.dandielo.citizens.traders_v3.traders.stock.StockItem;
 public class LoadTask extends CargoTask
 {
-    public LoadTask(Craft craft){
-        super(craft);
+    public LoadTask(Craft craft, Stock stock, StockItem item){
+        super(craft,stock,item);
     }
 
     protected void execute(){
