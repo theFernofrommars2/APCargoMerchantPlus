@@ -22,6 +22,14 @@
 			<id>spigot-repo</id>
 			<url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
 		</repository>
+         <repository>
+			<id>citizens-repo</id>
+			<url>http://repo.citizensnpcs.co/</url>
+		</repository>
+        <repository>
+            <id>vault-repo</id>
+            <url>http://nexus.hc.to/content/repositories/pub_releases</url>
+        </repository>
 	</repositories>
 	<dependencies>
 		<!--Spigot API -->
@@ -46,5 +54,35 @@
             <scope>system</scope>
             <systemPath>${project.basedir}/libs/movecraft.jar</systemPath>
 		</dependency>
+        <!--DTL Core-->
+        <dependency>
+			<groupId>net.dandielo</groupId>
+			<artifactId>dtlCore</artifactId>
+			<version>1.1.0-SNAPSHOT</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/dtlCore.jar</systemPath>
+		</dependency>
+        <!--DTL Traders-->
+        <dependency>
+			<groupId>net.dandielo</groupId>
+			<artifactId>dtlTraders</artifactId>
+			<version>3.4-SNAPSHOT</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/dtlTraders.jar</systemPath>
+		</dependency>
+        <!--Citizens-->
+        <dependency>
+            <groupId>net.citizensnpcs</groupId>
+			<artifactId>citizensapi</artifactId>
+			<version>2.0.17-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+        <!--Vault-->
+        <dependency>
+            <groupId>net.milkbowl.vault</groupId>
+            <artifactId>VaultAPI</artifactId>
+            <version>1.6</version>
+            <scope>provided</scope>
+        </dependency>
 	</dependencies>
 </project>
