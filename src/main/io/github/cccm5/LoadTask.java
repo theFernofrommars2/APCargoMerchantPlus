@@ -35,7 +35,9 @@ public class LoadTask extends CargoTask
         }
         //FOR TESTING ONLY
         for(int i =0; i < inv.getSize() ; i++){
-            inv.setItem(i,item.getItem().clone());
+            ItemStack tempItem = item.getItem().clone();
+            tempItem.setAmount(tempItem.getMaxStackSize());
+            inv.setItem(i,tempItem);
         }
     }
 }
