@@ -220,7 +220,7 @@ public class Utils
         if(craft == null)
             throw new IllegalArgumentException("craft must not be null");
         if(item.getType() == Material.AIR)
-            throw new IllegalArgumentException("item must not be Mater");
+            throw new IllegalArgumentException("item must not have type Material.AIR");
             
         for(Location loc : movecraftLocationToBukkitLocation(craft.getBlockList(),craft.getW()))
             for(Material m : lookup)
@@ -230,7 +230,7 @@ public class Utils
                     if(item==null)
                         return inv;
                     for(ItemStack i : inv)
-                        if(i==null || i.getType() == Material.AIR || (i.isSimilar(item) && i.getAmount() + item.getAmount() <= item.getMaxStackSize() ))
+                        if(i==null || i.getType() == Material.AIR || (i.isSimilar(item) && i.getAmount() < item.getMaxStackSize() ))
                             return inv;
                 }
         return null;

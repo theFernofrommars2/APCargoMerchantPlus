@@ -46,7 +46,10 @@ public class LoadTask extends CargoTask
                 }else{
                     maxCount = (int)(Main.getEconomy().getBalance(originalPilot)/item.getPrice());
                     ItemStack tempItem = item.getItem().clone();
-                    tempItem.setAmount(inv.getItem(i).getAmount()+maxCount);
+                    if(inv.getItem(i)==null || inv.getItem(i).getType()==Material.AIR) 
+                        tempItem.setAmount(maxCount);
+                    else
+                        tempItem.setAmount(inv.getItem(i).getAmount()+maxCount);
                     inv.setItem(i,tempItem);
                     loaded+=maxCount;
                     this.cancel();
