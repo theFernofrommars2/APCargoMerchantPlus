@@ -144,6 +144,7 @@ public class Main extends JavaPlugin implements Listener {
                 sender.sendMessage(ERROR_TAG + "You need to be holding a cargo item to do that!");
                 return true;
             }
+            sender.sendMessage(SUCCES_TAG + "Started unloading cargo");
             new UnloadTask(craftManager.getCraftByPlayer(player),stock,finalItem ).runTaskTimer(this,10,10);
             return true;
         }
@@ -192,6 +193,7 @@ public class Main extends JavaPlugin implements Listener {
                 return true;
             }
             new LoadTask(craftManager.getCraftByPlayer(player),stock,finalItem ).runTaskTimer(this,10,10);
+            sender.sendMessage(SUCCES_TAG + "Started loading cargo");
             return true;
         }
         return false;
