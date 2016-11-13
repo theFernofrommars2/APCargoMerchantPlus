@@ -19,8 +19,12 @@ public abstract class CargoTask extends BukkitRunnable
     protected Stock stock;
     protected final StockItem item;
     protected CargoTask(Craft craft, Stock stock, StockItem item){
-        if (craft == null) 
+        if (craft == null) {
+            if(Main.isDebug()){
+
+            }
             throw new IllegalArgumentException("craft must not be null");
+        }
         else
             this.craft = craft;
         if (stock == null) 

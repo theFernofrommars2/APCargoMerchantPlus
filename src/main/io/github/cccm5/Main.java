@@ -37,13 +37,14 @@ import net.dandielo.citizens.traders_v3.traits.TraderTrait;
 
 import net.milkbowl.vault.economy.Economy;
 public class Main extends JavaPlugin implements Listener {
-    private static final String ERROR_TAG = ChatColor.RED + "Error: " + ChatColor.DARK_RED;
-    private static final String SUCCES_TAG = ChatColor.DARK_AQUA + "Cargo: " + ChatColor.WHITE;
+    public static final String ERROR_TAG = ChatColor.RED + "Error: " + ChatColor.DARK_RED;
+    public static final String SUCCES_TAG = ChatColor.DARK_AQUA + "Cargo: " + ChatColor.WHITE;
     private CraftManager craftManager;
     private static Economy economy;
     private Logger logger;
     private FileConfiguration config;
     private boolean cardinalDistance;
+    private static boolean debug;
     private double scanRange;
     public void onEnable() {
         logger = this.getLogger();
@@ -54,10 +55,12 @@ public class Main extends JavaPlugin implements Listener {
         config = getConfig();
         config.addDefault("Scan range",100.0);
         config.addDefault("Cardinal distance",true);
+        config.addDefault("Debug mode",false);
         config.options().copyDefaults(true);
         this.saveConfig();
         scanRange = config.getDouble("Scan range");
         cardinalDistance = config.getBoolean("Cardinal distance");
+        debug = config.getBoolean("Debug mode");
         //************************
         //*    Load Movecraft    *
         //************************
@@ -95,7 +98,6 @@ public class Main extends JavaPlugin implements Listener {
 
     public void onDisable() {
         net.citizensnpcs.api.CitizensAPI.getTraitFactory().deregisterTrait(net.citizensnpcs.api.trait.TraitInfo.create(CargoTrait.class));
-        
     }
 
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) { // Plugin
@@ -127,6 +129,10 @@ public class Main extends JavaPlugin implements Listener {
                 return true;
             }
 
+            if(player.getInventory().getItemInMainHand() == null || player.getInventory().getItemInMainHand().getType() == Material.AIR){
+                sender.sendMessage(ERROR_TAG + "You need to be holding a cargo item to do that!");
+                return true;
+            }
             Stock stock = cargoMerchant.getTrait(TraderTrait.class).getStock();
             StockItem compareItem = new StockItem(player.getInventory().getItemInMainHand().clone()), finalItem=null;
             for(StockItem tempItem : stock.getStock("sell"))
@@ -170,6 +176,10 @@ public class Main extends JavaPlugin implements Listener {
                 return true;
             }
 
+            if(player.getInventory().getItemInMainHand() == null || player.getInventory().getItemInMainHand().getType() == Material.AIR){
+                sender.sendMessage(ERROR_TAG + "You need to be holding a cargo item to do that!");
+                return true;
+            }
             Stock stock = cargoMerchant.getTrait(TraderTrait.class).getStock();
             StockItem compareItem = new StockItem(player.getInventory().getItemInMainHand().clone()), finalItem=null;
             for(StockItem tempItem : stock.getStock("buy"))
@@ -282,5 +292,9 @@ public class Main extends JavaPlugin implements Listener {
                 }
             }
         }
+    }
+    
+    public static boolean isDebug(){
+        return debug;
     }
 }

@@ -30,6 +30,7 @@ public class LoadTask extends CargoTask
         Inventory inv = Utils.firstInventoryWithSpace(craft, item.getItem(), Material.CHEST,Material.TRAPPED_CHEST);
         if(inv == null){
             this.cancel();
+            originalPilot.sendMessage(Main.SUCCES_TAG + "All cargo unloaded");
             return;
         }
         //FOR TESTING ONLY
