@@ -1,7 +1,7 @@
 name: MovecraftUnloading
 main: io.github.cccm5.Main
 version: 1.0.0
-depend: [Movecraft]
+depend: [Movecraft, Vault, Citizens, dtlCore, dtlTraders]
 commands:
     load:
         description: loads cargo
