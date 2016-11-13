@@ -33,17 +33,18 @@ public class LoadTask extends CargoTask
             originalPilot.sendMessage(Main.SUCCES_TAG + "All cargo loaded");
             return;
         }
-        //FOR TESTING ONLY
+
         int loaded=0;
         for(int i =0; i < inv.getSize() ; i++)
-            if(inv.getItem(i).isSimilar(item.getItem()))
-                if(Main.getEconomy().has(originalPilot,item.getPrice()*(inv.getItem(i).getMaxStackSize() - inv.getItem(i).getAmount()))){
-                    loaded+=inv.getItem(i).getMaxStackSize() - inv.getItem(i).getAmount();
+            if(inv.getItem(i)==null || inv.getItem(i).getType()==Material.AIR || inv.getItem(i).isSimilar(item.getItem())){
+                int maxCount = (inv.getItem(i)==null || inv.getItem(i).getType()==Material.AIR) ? item.getItem().getMaxStackSize() : inv.getItem(i).getMaxStackSize() - inv.getItem(i).getAmount();
+                if(Main.getEconomy().has(originalPilot,item.getPrice()*(maxCount))){
+                    loaded+=maxCount;
                     ItemStack tempItem = item.getItem().clone();
                     tempItem.setAmount(tempItem.getMaxStackSize());
                     inv.setItem(i,tempItem);
                 }else{
-                    int maxCount = (int)(Main.getEconomy().getBalance(originalPilot)/item.getPrice());
+                    maxCount = (int)(Main.getEconomy().getBalance(originalPilot)/item.getPrice());
                     ItemStack tempItem = item.getItem().clone();
                     tempItem.setAmount(inv.getItem(i).getAmount()+maxCount);
                     inv.setItem(i,tempItem);
@@ -53,7 +54,8 @@ public class LoadTask extends CargoTask
                     originalPilot.sendMessage(Main.SUCCES_TAG + "You ran out of money!");
                     break;
                 }
-                
+            }
+
         originalPilot.sendMessage(Main.SUCCES_TAG + "Sold " + loaded + " items for $" + String.format("%.2f", loaded*item.getPrice()));
         Main.getEconomy().withdrawPlayer(originalPilot,loaded*item.getPrice());
     }
