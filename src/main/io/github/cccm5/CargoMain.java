@@ -44,17 +44,20 @@ public class CargoMain extends JavaPlugin implements Listener {
     private static Economy economy;
     private static ArrayList<Player> playersInQue;
     private static double tax;
-
+    private static CargoMain instance;
+    private static int delay;//ticks
+    
     private CraftManager craftManager;
     private FileConfiguration config;
     private boolean cardinalDistance;
     private static boolean debug;
     private double scanRange;
-    private int delay;//ticks
+    
     public void onEnable() {
         logger = this.getLogger();
         this.getServer().getPluginManager().registerEvents(this, this);
         playersInQue = new ArrayList<Player>();
+        instance = this;
         //************************
         //*       Configs        *
         //************************
@@ -109,6 +112,7 @@ public class CargoMain extends JavaPlugin implements Listener {
     public void onDisable() {
         logger = null;
         economy = null;
+        instance = null;
     }
 
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) { // Plugin
@@ -394,6 +398,15 @@ public class CargoMain extends JavaPlugin implements Listener {
 
     public static double getTax(){
         return tax;
+    }
+    
+    public static int getDelay(){
+        return delay;
+    }
+
+
+    public static CargoMain getInstance(){
+        return instance;
     }
 
 }
