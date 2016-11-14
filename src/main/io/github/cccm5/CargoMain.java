@@ -107,7 +107,6 @@ public class CargoMain extends JavaPlugin implements Listener {
     }
 
     public void onDisable() {
-        net.citizensnpcs.api.CitizensAPI.getTraitFactory().deregisterTrait(net.citizensnpcs.api.trait.TraitInfo.create(CargoTrait.class));
         logger = null;
         economy = null;
     }
@@ -305,7 +304,6 @@ public class CargoMain extends JavaPlugin implements Listener {
                         player.sendMessage(ERROR_TAG + "You need to be holding a cargo item to do that!");
                         return;
                     }
-                    
 
                     player.sendMessage(SUCCES_TAG + "Started unloading cargo");
                     playersInQue.add(player);
