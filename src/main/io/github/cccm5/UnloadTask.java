@@ -28,13 +28,13 @@ public class UnloadTask extends CargoTask
         //get the price of all the cargo - done
         //remove the items, pay the user while taking a tax
         List<Inventory> invs = Utils.getInventories(craft, item.getItem(), Material.CHEST, Material.TRAPPED_CHEST);
-        Inventory inv = invs.get(0);
         if(invs.size() <=0 ){
             this.cancel();
             CargoMain.getQue().remove(originalPilot);
             originalPilot.sendMessage(CargoMain.ERROR_TAG + "You have no " + item.getName() + " on this craft!");
             return;
         }
+        Inventory inv = invs.get(0);
         int count = 0;
         for(int i = 0; i<inv.getSize();i++){
             if(inv.getItem(i) != null && inv.getItem(i).isSimilar(item.getItem())){
@@ -44,14 +44,13 @@ public class UnloadTask extends CargoTask
         }
         originalPilot.sendMessage(CargoMain.SUCCES_TAG + "Unloaded " + count + " items for $" + String.format("%.2f", count*item.getPrice() - CargoMain.getTax()*count*item.getPrice()) + " took a tax of " + String.format("%.2f",CargoMain.getTax()*count*item.getPrice()));
         CargoMain.getEconomy().depositPlayer(originalPilot,count*item.getPrice());
-        
-        
+
         if(invs.size()<=1){
             this.cancel();
             CargoMain.getQue().remove(originalPilot);
             originalPilot.sendMessage(CargoMain.SUCCES_TAG + "All cargo unloaded");
             return;
         }
-        new ProcessingTask(originalPilot, item,invs.size()-1).runTaskTimer(CargoMain.getInstance(),20,20);
+        new ProcessingTask(originalPilot, item,invs.size()).runTaskTimer(CargoMain.getInstance(),0,20);
     }
 }

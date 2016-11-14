@@ -57,7 +57,7 @@ public class ProcessingTask extends BukkitRunnable implements Listener
             return;
         }
         //Score score = objective.getScore(ChatColor.GREEN + "Time:"); //Get a fake offline player
-        objective.getScore(ChatColor.GREEN + "Remaining Chests:").setScore(remainingTime);
-        objective.getScore(ChatColor.GREEN + "Time:").setScore(remainingChests);
+        objective.getScore(ChatColor.GREEN + "Remaining Chests:").setScore(remainingChests);
+        objective.getScore(ChatColor.GREEN + "Time:").setScore(remainingTime);
     }
 }
