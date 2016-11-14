@@ -30,12 +30,6 @@ public class LoadTask extends CargoTask
         //add the items to chest
         //charge user price of cargo plus tax
         List<Inventory> invs = Utils.getInventoriesWithSpace(craft, item.getItem(), Material.CHEST, Material.TRAPPED_CHEST);
-        if(invs.size() <=0 ){
-            this.cancel();
-            CargoMain.getQue().remove(originalPilot);
-            originalPilot.sendMessage(CargoMain.ERROR_TAG + "You have no space for " + item.getName() + " on this craft!");
-            return;
-        }
         Inventory inv = invs.get(0);
         int loaded=0;
         for(int i =0; i < inv.getSize() ; i++)

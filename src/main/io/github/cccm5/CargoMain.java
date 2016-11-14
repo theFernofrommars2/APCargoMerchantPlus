@@ -46,13 +46,13 @@ public class CargoMain extends JavaPlugin implements Listener {
     private static double tax;
     private static CargoMain instance;
     private static int delay;//ticks
-    
+
     private CraftManager craftManager;
     private FileConfiguration config;
     private boolean cardinalDistance;
     private static boolean debug;
     private double scanRange;
-    
+
     public void onEnable() {
         logger = this.getLogger();
         this.getServer().getPluginManager().registerEvents(this, this);
@@ -170,10 +170,16 @@ public class CargoMain extends JavaPlugin implements Listener {
                 sender.sendMessage(ERROR_TAG + "You need to be holding a cargo item to do that!");
                 return true;
             }
-
+            
+            int size = Utils.getInventories(playerCraft, finalItem.getItem(), Material.CHEST, Material.TRAPPED_CHEST).size();
+            if(size <=0 ){
+                player.sendMessage(CargoMain.ERROR_TAG + "You have no space for " + finalItem.getName() + " on this craft!");
+                return true;
+            }
             sender.sendMessage(SUCCES_TAG + "Started unloading cargo");
             playersInQue.add(player);
-            new UnloadTask(craftManager.getCraftByPlayer(player),stock,finalItem ).runTaskTimer(this,0,delay);
+            new UnloadTask(craftManager.getCraftByPlayer(player),stock,finalItem ).runTaskTimer(this,delay,delay);
+            new ProcessingTask(player, finalItem,Utils.getInventories(playerCraft, finalItem.getItem(), Material.CHEST, Material.TRAPPED_CHEST).size()).runTaskTimer(this,0,20);
             return true;
         }
 
@@ -232,8 +238,14 @@ public class CargoMain extends JavaPlugin implements Listener {
                 return true;
             }
 
+            int size = Utils.getInventoriesWithSpace(playerCraft, finalItem.getItem(), Material.CHEST, Material.TRAPPED_CHEST).size();
+            if(size <=0 ){
+                player.sendMessage(CargoMain.ERROR_TAG + "You have no space for " + finalItem.getName() + " on this craft!");
+                return true;
+            }
             playersInQue.add(player);
-            new LoadTask(craftManager.getCraftByPlayer(player),stock,finalItem ).runTaskTimer(this,0,delay);
+            new LoadTask(craftManager.getCraftByPlayer(player),stock,finalItem ).runTaskTimer(this,delay,delay);
+            new ProcessingTask(player, finalItem,size).runTaskTimer(this,0,20);
             sender.sendMessage(SUCCES_TAG + "Started loading cargo");
             return true;
         }
@@ -309,9 +321,15 @@ public class CargoMain extends JavaPlugin implements Listener {
                         return;
                     }
 
+                    int size = Utils.getInventories(playerCraft, finalItem.getItem(), Material.CHEST, Material.TRAPPED_CHEST).size();
+                    if(size <=0 ){
+                        player.sendMessage(CargoMain.ERROR_TAG + "You have no space for " + finalItem.getName() + " on this craft!");
+                        return;
+                    }
                     player.sendMessage(SUCCES_TAG + "Started unloading cargo");
                     playersInQue.add(player);
-                    new UnloadTask(craftManager.getCraftByPlayer(player),stock,finalItem ).runTaskTimer(this,0,delay);
+                    new UnloadTask(craftManager.getCraftByPlayer(player),stock,finalItem ).runTaskTimer(this,delay,delay);
+                    new ProcessingTask(player, finalItem,size).runTaskTimer(this,0,20);
                     return;
                 }
 
@@ -366,9 +384,15 @@ public class CargoMain extends JavaPlugin implements Listener {
                         return;
                     }
 
+                    int size = Utils.getInventoriesWithSpace(playerCraft, finalItem.getItem(), Material.CHEST, Material.TRAPPED_CHEST).size();
+                    if(size <=0 ){
+                        player.sendMessage(CargoMain.ERROR_TAG + "You have no space for " + finalItem.getName() + " on this craft!");
+                        return;
+                    }
                     playersInQue.add(player);
-                    new LoadTask(craftManager.getCraftByPlayer(player),stock,finalItem ).runTaskTimer(this,0,delay);
+                    new LoadTask(craftManager.getCraftByPlayer(player),stock,finalItem ).runTaskTimer(this,delay,delay);
                     player.sendMessage(SUCCES_TAG + "Started loading cargo");
+                    new ProcessingTask(player, finalItem,size).runTaskTimer(this,0,20);
                     return;
                 }
             }
@@ -399,11 +423,10 @@ public class CargoMain extends JavaPlugin implements Listener {
     public static double getTax(){
         return tax;
     }
-    
+
     public static int getDelay(){
         return delay;
     }
-
 
     public static CargoMain getInstance(){
         return instance;

@@ -28,12 +28,7 @@ public class UnloadTask extends CargoTask
         //get the price of all the cargo - done
         //remove the items, pay the user while taking a tax
         List<Inventory> invs = Utils.getInventories(craft, item.getItem(), Material.CHEST, Material.TRAPPED_CHEST);
-        if(invs.size() <=0 ){
-            this.cancel();
-            CargoMain.getQue().remove(originalPilot);
-            originalPilot.sendMessage(CargoMain.ERROR_TAG + "You have no " + item.getName() + " on this craft!");
-            return;
-        }
+        
         Inventory inv = invs.get(0);
         int count = 0;
         for(int i = 0; i<inv.getSize();i++){
