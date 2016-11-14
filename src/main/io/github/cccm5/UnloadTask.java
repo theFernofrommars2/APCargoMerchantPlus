@@ -48,6 +48,6 @@ public class UnloadTask extends CargoTask
             originalPilot.sendMessage(CargoMain.SUCCES_TAG + "All cargo unloaded");
             return;
         }
-        new ProcessingTask(originalPilot, item, CargoMain.getDelay(),1).runTaskTimer(CargoMain.getInstance(),1,1);
+        new ProcessingTask(originalPilot, item).runTaskTimer(CargoMain.getInstance(),20,20);
     }
 }

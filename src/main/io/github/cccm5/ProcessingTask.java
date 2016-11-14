@@ -20,20 +20,25 @@ import net.dandielo.citizens.traders_v3.traders.stock.StockItem;
  */
 public class ProcessingTask extends BukkitRunnable implements Listener
 {
+    private static final int DELAY_BETWEEN_DISPLAY = 1;
     private int remainingTime,delay;
-    private Player player;
-    private StockItem item;
+    private final Player player;
+    private final StockItem item;
     private Scoreboard board;
     private Objective objective;
-    public ProcessingTask(Player player, StockItem item, int totalTime, int delay){
+    /**
+     * @param delay the delay between executions in seconds
+     * @param totalTime the totalTime in seconds
+     */
+    public ProcessingTask(Player player, StockItem item){
         if (item == null) 
             throw new IllegalArgumentException("item must not be null");
         if (player == null) 
             throw new IllegalArgumentException("player must not be null");
         this.player = player;
         this.item = item;
-        this.remainingTime = totalTime;
-        this.delay = delay;
+        this.remainingTime = CargoMain.getDelay()/20;
+        //this.delay = delay;
         board = Bukkit.getScoreboardManager().getNewScoreboard();
         objective = board.registerNewObjective(ChatColor.DARK_AQUA + "Cargo", "dummy");
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
@@ -42,7 +47,7 @@ public class ProcessingTask extends BukkitRunnable implements Listener
     @Override
     public void run() {
         if(remainingTime > 0)
-            remainingTime-=delay;
+            remainingTime-=DELAY_BETWEEN_DISPLAY;
         else{
             this.cancel();
             player.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
