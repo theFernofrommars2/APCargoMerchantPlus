@@ -25,7 +25,11 @@ public class ProcessingTask extends BukkitRunnable implements Listener
     private StockItem item;
     private Scoreboard board;
     private Objective objective;
-    private ProcessingTask(Player player, StockItem item, int totalTime, int delay){
+    public ProcessingTask(Player player, StockItem item, int totalTime, int delay){
+        if (item == null) 
+            throw new IllegalArgumentException("item must not be null");
+        if (player == null) 
+            throw new IllegalArgumentException("player must not be null");
         this.player = player;
         this.item = item;
         this.remainingTime = totalTime;
@@ -47,9 +51,5 @@ public class ProcessingTask extends BukkitRunnable implements Listener
         Score score = objective.getScore(ChatColor.GREEN + "Time:"); //Get a fake offline player
         score.setScore(remainingTime);
         player.setScoreboard(board);
-    }
-
-    public static void generateTask(Player player, StockItem item, int totalTime, int delay){
-        new ProcessingTask(player, item, totalTime,delay).runTaskTimer(CargoMain.getInstance(),delay,delay);
     }
 }
