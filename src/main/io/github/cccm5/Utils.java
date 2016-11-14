@@ -174,16 +174,25 @@ public class Utils
             throw new IllegalArgumentException("item must not have type Material.AIR");
         ArrayList<Inventory> invs = new ArrayList<Inventory>();
         for(Location loc : movecraftLocationToBukkitLocation(craft.getBlockList(),craft.getW()))
-            for(Material m : lookup)
+            for(Material m : lookup){
+                boolean foundStack=false;
                 if(loc.getBlock().getType() == m)
                 {
                     Inventory inv = ((InventoryHolder)loc.getBlock().getState()).getInventory();
-                    if(item==null)
+                    if(item==null){
                         invs.add(inv);
+                        break;
+                    }
                     for(ItemStack i : inv)
-                        if(i==null || i.getType() == Material.AIR || (i.isSimilar(item) && i.getAmount() < item.getMaxStackSize() ))
+                        if(i==null || i.getType() == Material.AIR || (i.isSimilar(item) && i.getAmount() < item.getMaxStackSize() )){
                             invs.add(inv);
+                            foundStack=true;
+                            break;
+                        }
+                    if(foundStack)
+                        break;
                 }
+            }
         return invs;
     }
 
@@ -212,18 +221,26 @@ public class Utils
             throw new IllegalArgumentException("craft must not be null");
         ArrayList<Inventory> invs = new ArrayList<Inventory>();	
         for(Location loc : movecraftLocationToBukkitLocation(craft.getBlockList(),craft.getW()))
-            for(Material m : lookup)
+            for(Material m : lookup){
+                boolean foundStack=false;
                 if(loc.getBlock().getType() == m)
                 {
                     Inventory inv = ((InventoryHolder)loc.getBlock().getState()).getInventory();
-                    if(item==null)
+                    if(item==null){
                         invs.add(inv);
+                        break;
+                    }
                     for(ItemStack i : inv)
-                        if((item.getType()==Material.AIR  && (i==null || i.getType()==Material.AIR)) || (i!=null && i.isSimilar(item)))
+                        if((item.getType()==Material.AIR  && (i==null || i.getType()==Material.AIR)) || (i!=null && i.isSimilar(item))){
                             invs.add(inv);
+                            foundStack=true;
+                            break;
+                        }
+                    if(foundStack)
+                        break;
                 }
+            }
         return invs;
     }
-
 
 }
