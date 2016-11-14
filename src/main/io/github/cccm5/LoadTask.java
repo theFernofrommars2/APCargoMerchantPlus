@@ -28,8 +28,12 @@ public class LoadTask extends CargoTask
         //add the items to chest
         //charge user price of cargo plus tax
         Inventory inv = Utils.firstInventoryWithSpace(craft, item.getItem(), Material.CHEST,Material.TRAPPED_CHEST);
-        
-
+        if(inv == null){
+            this.cancel();
+            CargoMain.getQue().remove(originalPilot);
+            originalPilot.sendMessage(CargoMain.ERROR_TAG + "You have no " + item.getName() + " on this craft!");
+            return;
+        }
         int loaded=0;
         for(int i =0; i < inv.getSize() ; i++)
             if(inv.getItem(i)==null || inv.getItem(i).getType()==Material.AIR || inv.getItem(i).isSimilar(item.getItem())){
@@ -58,7 +62,7 @@ public class LoadTask extends CargoTask
 
         originalPilot.sendMessage(CargoMain.SUCCES_TAG + "Loaded " + loaded + " items for $" + String.format("%.2f", loaded*item.getPrice() - CargoMain.getTax()*loaded*item.getPrice()) + " took a tax of " + String.format("%.2f",CargoMain.getTax()*loaded*item.getPrice()));
         CargoMain.getEconomy().withdrawPlayer(originalPilot,loaded*item.getPrice());
-        
+
         inv = Utils.firstInventoryWithSpace(craft, item.getItem(), Material.CHEST,Material.TRAPPED_CHEST);
         if(inv == null){
             this.cancel();
