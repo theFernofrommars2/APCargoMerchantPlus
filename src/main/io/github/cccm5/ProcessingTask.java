@@ -34,7 +34,7 @@ public class ProcessingTask extends BukkitRunnable implements Listener
         this.item = item;
         this.remainingTime = totalTime;
         this.delay = delay;
-        Scoreboard board = Bukkit.getScoreboardManager().getNewScoreboard();
+        board = Bukkit.getScoreboardManager().getNewScoreboard();
         objective = board.registerNewObjective(ChatColor.DARK_AQUA + "Cargo", "dummy");
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
     }
