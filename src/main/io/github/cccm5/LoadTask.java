@@ -66,6 +66,6 @@ public class LoadTask extends CargoTask
             originalPilot.sendMessage(CargoMain.SUCCES_TAG + "All cargo loaded");
             return;
         }
-        new ProcessingTask(originalPilot, item,invs.size()-1).runTaskTimer(CargoMain.getInstance(),0,20);
+        new ProcessingTask(originalPilot, item,invs.size()).runTaskTimer(CargoMain.getInstance(),0,20);
     }
 }
