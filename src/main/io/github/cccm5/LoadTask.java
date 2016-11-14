@@ -29,7 +29,7 @@ public class LoadTask extends CargoTask
         //if greater than the players balance, fill until balance depleted
         //add the items to chest
         //charge user price of cargo plus tax
-        List<Inventory> invs = Utils.getInventories(craft, item.getItem(), Material.CHEST, Material.TRAPPED_CHEST);
+        List<Inventory> invs = Utils.getInventoriesWithSpace(craft, item.getItem(), Material.CHEST, Material.TRAPPED_CHEST);
         if(invs.size() <=0 ){
             this.cancel();
             CargoMain.getQue().remove(originalPilot);
