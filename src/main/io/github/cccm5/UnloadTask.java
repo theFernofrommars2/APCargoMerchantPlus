@@ -20,15 +20,8 @@ public class UnloadTask extends CargoTask
     }
 
     public void execute(){
-        //************************
-        //*     To Implement     *
-        //************************
-        //check if there's any chests with cargo, cancel if false - done
-        //get the first chest with cargo - done
-        //get the price of all the cargo - done
-        //remove the items, pay the user while taking a tax
         List<Inventory> invs = Utils.getInventories(craft, item.getItem(), Material.CHEST, Material.TRAPPED_CHEST);
-        
+        new ProcessingTask(originalPilot, item,invs.size()).runTaskTimer(CargoMain.getInstance(),0,20);
         Inventory inv = invs.get(0);
         int count = 0;
         for(int i = 0; i<inv.getSize();i++){
@@ -46,6 +39,6 @@ public class UnloadTask extends CargoTask
             originalPilot.sendMessage(CargoMain.SUCCES_TAG + "All cargo unloaded");
             return;
         }
-        new ProcessingTask(originalPilot, item,invs.size()).runTaskTimer(CargoMain.getInstance(),0,20);
+        
     }
 }
