@@ -1,5 +1,8 @@
 package io.github.cccm5;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -24,8 +27,9 @@ public class UnloadTask extends CargoTask
         //get the first chest with cargo - done
         //get the price of all the cargo - done
         //remove the items, pay the user while taking a tax
-        Inventory inv = Utils.firstInventory(craft, item.getItem(), Material.CHEST, Material.TRAPPED_CHEST);
-        if(inv == null){
+        List<Inventory> invs = Utils.getInventories(craft, item.getItem(), Material.CHEST, Material.TRAPPED_CHEST);
+        Inventory inv = invs.get(0);
+        if(invs.size() <=0 ){
             this.cancel();
             CargoMain.getQue().remove(originalPilot);
             originalPilot.sendMessage(CargoMain.ERROR_TAG + "You have no " + item.getName() + " on this craft!");
@@ -40,14 +44,14 @@ public class UnloadTask extends CargoTask
         }
         originalPilot.sendMessage(CargoMain.SUCCES_TAG + "Unloaded " + count + " items for $" + String.format("%.2f", count*item.getPrice() - CargoMain.getTax()*count*item.getPrice()) + " took a tax of " + String.format("%.2f",CargoMain.getTax()*count*item.getPrice()));
         CargoMain.getEconomy().depositPlayer(originalPilot,count*item.getPrice());
-        inv = Utils.firstInventory(craft, item.getItem(), Material.CHEST, Material.TRAPPED_CHEST);
-
-        if(inv == null){
+        
+        
+        if(invs.size()<=1){
             this.cancel();
             CargoMain.getQue().remove(originalPilot);
             originalPilot.sendMessage(CargoMain.SUCCES_TAG + "All cargo unloaded");
             return;
         }
-        new ProcessingTask(originalPilot, item).runTaskTimer(CargoMain.getInstance(),20,20);
+        new ProcessingTask(originalPilot, item,invs.size()-1).runTaskTimer(CargoMain.getInstance(),20,20);
     }
 }

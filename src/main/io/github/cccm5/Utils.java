@@ -148,4 +148,82 @@ public class Utils
         return null;
     }
 
+    /**
+     * Gets the first inventory of a lookup material type on a craft holding a specific item, returns null if none found
+     * an input of null for item searches withought checking inventory contents
+     * 
+     * @param craft the craft to scan
+     * @param item the item to look for during the scan
+     * @param lookup the materials to compare against while scaning
+     * @return the first inventory matching a lookup material on the craft
+     */
+    public static List<Inventory> getInventoriesWithSpace(Craft craft, ItemStack item, Material... lookup){
+        boolean test=false;
+        for(Material m : lookup){
+            for(Material compare : INVENTORY_MATERIALS)
+                if(compare == m){
+                    test=true;
+                    continue;
+                }
+            if(!test)
+                throw new IllegalArgumentException(m + " is not an inventory type");
+        }
+        if(craft == null)
+            throw new IllegalArgumentException("craft must not be null");
+        if(item.getType() == Material.AIR)
+            throw new IllegalArgumentException("item must not have type Material.AIR");
+        ArrayList<Inventory> invs = new ArrayList<Inventory>();
+        for(Location loc : movecraftLocationToBukkitLocation(craft.getBlockList(),craft.getW()))
+            for(Material m : lookup)
+                if(loc.getBlock().getType() == m)
+                {
+                    Inventory inv = ((InventoryHolder)loc.getBlock().getState()).getInventory();
+                    if(item==null)
+                        invs.add(inv);
+                    for(ItemStack i : inv)
+                        if(i==null || i.getType() == Material.AIR || (i.isSimilar(item) && i.getAmount() < item.getMaxStackSize() ))
+                            invs.add(inv);
+                }
+        return invs;
+    }
+
+    /**
+     * Gets the first inventory of a lookup material type on a craft holding a specific item, returns null if none found
+     * an input of null for item searches withought checking inventory contents
+     * an input of an ItemStack with type set to Material.AIR for searches for empty space in an inventory
+     * 
+     * @param craft the craft to scan
+     * @param item the item to look for during the scan
+     * @param lookup the materials to compare against while scaning
+     * @return the first inventory matching a lookup material on the craft
+     */
+    public static List<Inventory> getInventories(Craft craft, ItemStack item, Material... lookup){
+        boolean test=false;
+        for(Material m : lookup){
+            for(Material compare : INVENTORY_MATERIALS)
+                if(compare == m){
+                    test=true;
+                    continue;
+                }
+            if(!test)
+                throw new IllegalArgumentException(m + " is not an inventory type");
+        }
+        if(craft == null)
+            throw new IllegalArgumentException("craft must not be null");
+        ArrayList<Inventory> invs = new ArrayList<Inventory>();	
+        for(Location loc : movecraftLocationToBukkitLocation(craft.getBlockList(),craft.getW()))
+            for(Material m : lookup)
+                if(loc.getBlock().getType() == m)
+                {
+                    Inventory inv = ((InventoryHolder)loc.getBlock().getState()).getInventory();
+                    if(item==null)
+                        invs.add(inv);
+                    for(ItemStack i : inv)
+                        if((item.getType()==Material.AIR  && (i==null || i.getType()==Material.AIR)) || (i!=null && i.isSimilar(item)))
+                            invs.add(inv);
+                }
+        return invs;
+    }
+
+
 }

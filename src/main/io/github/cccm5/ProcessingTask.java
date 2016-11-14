@@ -26,11 +26,12 @@ public class ProcessingTask extends BukkitRunnable implements Listener
     private final StockItem item;
     private Scoreboard board;
     private Objective objective;
+    private int remainingChests;
     /**
      * @param delay the delay between executions in seconds
      * @param totalTime the totalTime in seconds
      */
-    public ProcessingTask(Player player, StockItem item){
+    public ProcessingTask(Player player, StockItem item, int remainingChests){//, int remainingChests){
         if (item == null) 
             throw new IllegalArgumentException("item must not be null");
         if (player == null) 
@@ -38,10 +39,12 @@ public class ProcessingTask extends BukkitRunnable implements Listener
         this.player = player;
         this.item = item;
         this.remainingTime = CargoMain.getDelay()/20;
+        this.remainingChests = remainingChests;
         //this.delay = delay;
         board = Bukkit.getScoreboardManager().getNewScoreboard();
-        objective = board.registerNewObjective(ChatColor.DARK_AQUA + "Cargo", "dummy");
+        objective = board.registerNewObjective(ChatColor.DARK_AQUA + "Cargo: " + ChatColor.WHITE +item.getName(), "dummy");
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+        player.setScoreboard(board);
     }
 
     @Override
@@ -53,8 +56,8 @@ public class ProcessingTask extends BukkitRunnable implements Listener
             player.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
             return;
         }
-        Score score = objective.getScore(ChatColor.GREEN + "Time:"); //Get a fake offline player
-        score.setScore(remainingTime);
-        player.setScoreboard(board);
+        //Score score = objective.getScore(ChatColor.GREEN + "Time:"); //Get a fake offline player
+        objective.getScore(ChatColor.GREEN + "Remaining Chests:").setScore(remainingTime);
+        objective.getScore(ChatColor.GREEN + "Time:").setScore(remainingChests);
     }
 }

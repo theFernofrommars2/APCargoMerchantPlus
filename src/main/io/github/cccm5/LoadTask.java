@@ -1,5 +1,7 @@
 package io.github.cccm5;
 
+import java.util.List;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -27,8 +29,9 @@ public class LoadTask extends CargoTask
         //if greater than the players balance, fill until balance depleted
         //add the items to chest
         //charge user price of cargo plus tax
-        Inventory inv = Utils.firstInventoryWithSpace(craft, item.getItem(), Material.CHEST,Material.TRAPPED_CHEST);
-        if(inv == null){
+        List<Inventory> invs = Utils.getInventories(craft, item.getItem(), Material.CHEST, Material.TRAPPED_CHEST);
+        Inventory inv = invs.get(0);
+        if(invs.size() <=0 ){
             this.cancel();
             CargoMain.getQue().remove(originalPilot);
             originalPilot.sendMessage(CargoMain.ERROR_TAG + "You have no " + item.getName() + " on this craft!");
@@ -63,13 +66,12 @@ public class LoadTask extends CargoTask
         originalPilot.sendMessage(CargoMain.SUCCES_TAG + "Loaded " + loaded + " items for $" + String.format("%.2f", loaded*item.getPrice() - CargoMain.getTax()*loaded*item.getPrice()) + " took a tax of " + String.format("%.2f",CargoMain.getTax()*loaded*item.getPrice()));
         CargoMain.getEconomy().withdrawPlayer(originalPilot,loaded*item.getPrice());
 
-        inv = Utils.firstInventoryWithSpace(craft, item.getItem(), Material.CHEST,Material.TRAPPED_CHEST);
-        if(inv == null){
+        if(invs.size()<= 1){
             this.cancel();
             CargoMain.getQue().remove(originalPilot);
             originalPilot.sendMessage(CargoMain.SUCCES_TAG + "All cargo loaded");
             return;
         }
-        new ProcessingTask(originalPilot, item).runTaskTimer(CargoMain.getInstance(),20,20);
+        new ProcessingTask(originalPilot, item,invs.size()-1).runTaskTimer(CargoMain.getInstance(),20,20);
     }
 }
