@@ -21,7 +21,7 @@ public class LoadTask extends CargoTask
 
     protected void execute(){
         List<Inventory> invs = Utils.getInventoriesWithSpace(craft, item.getItem(), Material.CHEST, Material.TRAPPED_CHEST);
-        new ProcessingTask(originalPilot, item,invs.size()).runTaskTimer(CargoMain.getInstance(),0,20);
+
         Inventory inv = invs.get(0);
         int loaded=0;
         for(int i =0; i < inv.getSize() ; i++)
@@ -58,6 +58,6 @@ public class LoadTask extends CargoTask
             originalPilot.sendMessage(CargoMain.SUCCES_TAG + "All cargo loaded");
             return;
         }
-
+        new ProcessingTask(originalPilot, item,invs.size()).runTaskTimer(CargoMain.getInstance(),0,20);
     }
 }

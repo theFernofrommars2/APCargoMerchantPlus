@@ -21,7 +21,7 @@ public class UnloadTask extends CargoTask
 
     public void execute(){
         List<Inventory> invs = Utils.getInventories(craft, item.getItem(), Material.CHEST, Material.TRAPPED_CHEST);
-        new ProcessingTask(originalPilot, item,invs.size()).runTaskTimer(CargoMain.getInstance(),0,20);
+        
         Inventory inv = invs.get(0);
         int count = 0;
         for(int i = 0; i<inv.getSize();i++){
@@ -39,6 +39,6 @@ public class UnloadTask extends CargoTask
             originalPilot.sendMessage(CargoMain.SUCCES_TAG + "All cargo unloaded");
             return;
         }
-        
+        new ProcessingTask(originalPilot, item,invs.size()).runTaskTimer(CargoMain.getInstance(),0,20);
     }
 }
