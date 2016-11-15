@@ -49,7 +49,7 @@ public class ProcessingTask extends BukkitRunnable implements Listener
 
     @Override
     public void run() {
-        if(remainingTime > 0)
+        if(remainingTime > DELAY_BETWEEN_DISPLAY)
             remainingTime-=DELAY_BETWEEN_DISPLAY;
         else{
             this.cancel();
@@ -60,6 +60,6 @@ public class ProcessingTask extends BukkitRunnable implements Listener
         objective.getScore(ChatColor.GREEN + "Remaining Chests:").setScore(remainingChests);
         objective.getScore(ChatColor.GREEN + "Time:").setScore(remainingTime);
         //Bukkit.broadcastMessage(ChatColor.GREEN + "Time:" + remainingTime);
-        player.setScoreboard(board);
+        //player.setScoreboard(board);
     }
 }
