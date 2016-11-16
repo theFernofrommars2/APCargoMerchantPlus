@@ -250,6 +250,10 @@ public class CargoMain extends JavaPlugin implements Listener {
         }
 
         if (command.getName().equalsIgnoreCase("cargo")) {
+            if(!sender.hasPermission("Cargo.cargo")){
+                sender.sendMessage(ERROR_TAG + "You don't have permision to do that!");
+                return true;
+            }
             sender.sendMessage( ChatColor.WHITE + "--[ " + ChatColor.DARK_AQUA + "  Movecraft Cargo " + ChatColor.WHITE + " ]--");
             sender.sendMessage(ChatColor.DARK_AQUA + "Scan Range: " + ChatColor.WHITE + scanRange + " Blocks");
             sender.sendMessage(ChatColor.DARK_AQUA + "Transfer Delay: " + ChatColor.WHITE + delay + " ticks");
