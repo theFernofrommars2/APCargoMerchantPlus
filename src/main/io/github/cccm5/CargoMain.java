@@ -137,7 +137,7 @@ public class CargoMain extends JavaPlugin implements Listener {
             for(NPC npc :Utils.getNPCsWithTrait(CargoTrait.class)){
                 if(!npc.isSpawned())
                     continue;
-                distance = cardinalDistance ? Math.abs(loc.getX()-npc.getEntity().getLocation().getX()) + Math.abs(loc.getX()-npc.getEntity().getLocation().getX()) : Math.sqrt(Math.pow(loc.getX()-npc.getEntity().getLocation().getX(),2) + Math.pow(loc.getX()-npc.getEntity().getLocation().getX(),2));
+                distance = cardinalDistance ? Math.abs(loc.getX()-npc.getEntity().getLocation().getX()) + Math.abs(loc.getZ()-npc.getEntity().getLocation().getZ()) : Math.sqrt(Math.pow(loc.getX()-npc.getEntity().getLocation().getX(),2) + Math.pow(loc.getZ()-npc.getEntity().getLocation().getZ(),2));
                 if( distance <= lastScan){
                     lastScan = distance;
                     cargoMerchant = npc;
@@ -204,7 +204,7 @@ public class CargoMain extends JavaPlugin implements Listener {
             for(NPC npc :Utils.getNPCsWithTrait(CargoTrait.class)){
                 if(!npc.isSpawned())
                     continue;
-                distance = cardinalDistance ? Math.abs(loc.getX()-npc.getEntity().getLocation().getX()) + Math.abs(loc.getX()-npc.getEntity().getLocation().getX()) : Math.sqrt(Math.pow(loc.getX()-npc.getEntity().getLocation().getX(),2) + Math.pow(loc.getX()-npc.getEntity().getLocation().getX(),2));
+                distance = cardinalDistance ? Math.abs(loc.getX()-npc.getEntity().getLocation().getX()) + Math.abs(loc.getZ()-npc.getEntity().getLocation().getZ()) : Math.sqrt(Math.pow(loc.getX()-npc.getEntity().getLocation().getX(),2) + Math.pow(loc.getZ()-npc.getEntity().getLocation().getZ(),2));
                 if( distance <= lastScan){
                     lastScan = distance;
                     cargoMerchant = npc;
@@ -292,7 +292,7 @@ public class CargoMain extends JavaPlugin implements Listener {
                     for(NPC npc :Utils.getNPCsWithTrait(CargoTrait.class)){
                         if(!npc.isSpawned())
                             continue;
-                        distance = cardinalDistance ? Math.abs(loc.getX()-npc.getEntity().getLocation().getX()) + Math.abs(loc.getX()-npc.getEntity().getLocation().getX()) : Math.sqrt(Math.pow(loc.getX()-npc.getEntity().getLocation().getX(),2) + Math.pow(loc.getX()-npc.getEntity().getLocation().getX(),2));
+                        distance = cardinalDistance ? Math.abs(loc.getX()-npc.getEntity().getLocation().getX()) + Math.abs(loc.getZ()-npc.getEntity().getLocation().getZ()) : Math.sqrt(Math.pow(loc.getX()-npc.getEntity().getLocation().getX(),2) + Math.pow(loc.getZ()-npc.getEntity().getLocation().getZ(),2));
                         if( distance <= lastScan){
                             lastScan = distance;
                             cargoMerchant = npc;
@@ -355,7 +355,7 @@ public class CargoMain extends JavaPlugin implements Listener {
                     for(NPC npc :Utils.getNPCsWithTrait(CargoTrait.class)){
                         if(!npc.isSpawned())
                             continue;
-                        distance = cardinalDistance ? Math.abs(loc.getX()-npc.getEntity().getLocation().getX()) + Math.abs(loc.getX()-npc.getEntity().getLocation().getX()) : Math.sqrt(Math.pow(loc.getX()-npc.getEntity().getLocation().getX(),2) + Math.pow(loc.getX()-npc.getEntity().getLocation().getX(),2));
+                        distance = cardinalDistance ? Math.abs(loc.getX()-npc.getEntity().getLocation().getX()) + Math.abs(loc.getZ()-npc.getEntity().getLocation().getZ()) : Math.sqrt(Math.pow(loc.getX()-npc.getEntity().getLocation().getX(),2) + Math.pow(loc.getZ()-npc.getEntity().getLocation().getZ(),2));
                         if( distance <= lastScan){
                             lastScan = distance;
                             cargoMerchant = npc;
