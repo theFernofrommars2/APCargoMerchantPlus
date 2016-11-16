@@ -21,12 +21,11 @@ import net.dandielo.citizens.traders_v3.traders.stock.StockItem;
 public class ProcessingTask extends BukkitRunnable implements Listener
 {
     private static final int DELAY_BETWEEN_DISPLAY = 1;
-    private int remainingTime,delay;
+    private int remainingTime,delay,remainingChests;
     private final Player player;
     private final StockItem item;
     private Scoreboard board;
     private Objective objective;
-    private int remainingChests;
     /**
      * @param delay the delay between executions in seconds
      * @param totalTime the totalTime in seconds

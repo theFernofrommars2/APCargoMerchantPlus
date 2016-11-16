@@ -95,18 +95,12 @@ public class CargoMain extends JavaPlugin implements Listener {
         //************************
         //*      Load Vault      *
         //************************
-        if (getServer().getPluginManager().getPlugin("Vault") == null || getServer().getPluginManager().getPlugin("Citizens").isEnabled() == false) {
+        if (getServer().getPluginManager().getPlugin("Vault") == null || getServer().getPluginManager().getPlugin("Vault").isEnabled() == false) {
             logger.log(Level.SEVERE, "Vault not found or not enabled");
             getServer().getPluginManager().disablePlugin(this);	
             return;
         } 
-        org.bukkit.plugin.RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
-        if (rsp == null) {
-            logger.info("[AP-Merchant] Could not find compatible Vault plugin. Disabling Vault integration.");			
-            getServer().getPluginManager().disablePlugin(this);	
-            return;
-        }
-        economy = rsp.getProvider();
+        economy = getServer().getServicesManager().getRegistration(Economy.class).getProvider();
     }
 
     public void onDisable() {
@@ -170,16 +164,16 @@ public class CargoMain extends JavaPlugin implements Listener {
                 sender.sendMessage(ERROR_TAG + "You need to be holding a cargo item to do that!");
                 return true;
             }
-            
+
             int size = Utils.getInventories(playerCraft, finalItem.getItem(), Material.CHEST, Material.TRAPPED_CHEST).size();
             if(size <=0 ){
-                player.sendMessage(CargoMain.ERROR_TAG + "You have no space for " + finalItem.getName() + " on this craft!");
+                player.sendMessage(CargoMain.ERROR_TAG + "You have no " + finalItem.getName() + " on this craft!");
                 return true;
             }
             sender.sendMessage(SUCCES_TAG + "Started unloading cargo");
             playersInQue.add(player);
             new UnloadTask(craftManager.getCraftByPlayer(player),stock,finalItem ).runTaskTimer(this,delay,delay);
-            new ProcessingTask(player, finalItem,Utils.getInventories(playerCraft, finalItem.getItem(), Material.CHEST, Material.TRAPPED_CHEST).size()).runTaskTimer(this,0,20);
+            new ProcessingTask(player, finalItem,size).runTaskTimer(this,0,20);
             return true;
         }
 
@@ -238,9 +232,14 @@ public class CargoMain extends JavaPlugin implements Listener {
                 return true;
             }
 
+            if(finalItem.getPrice() > economy.getBalance(player)){
+                sender.sendMessage(ERROR_TAG + "You don't have enough money to buy any " + finalItem.getName() + "!");
+                return true;
+            }
+
             int size = Utils.getInventoriesWithSpace(playerCraft, finalItem.getItem(), Material.CHEST, Material.TRAPPED_CHEST).size();
             if(size <=0 ){
-                player.sendMessage(CargoMain.ERROR_TAG + "You have no space for " + finalItem.getName() + " on this craft!");
+                player.sendMessage(CargoMain.ERROR_TAG + "You don't have any space for " + finalItem.getName() + " on this craft!");
                 return true;
             }
             playersInQue.add(player);
@@ -323,7 +322,7 @@ public class CargoMain extends JavaPlugin implements Listener {
 
                     int size = Utils.getInventories(playerCraft, finalItem.getItem(), Material.CHEST, Material.TRAPPED_CHEST).size();
                     if(size <=0 ){
-                        player.sendMessage(CargoMain.ERROR_TAG + "You have no space for " + finalItem.getName() + " on this craft!");
+                        player.sendMessage(CargoMain.ERROR_TAG + "You have no " + finalItem.getName() + " on this craft!");
                         return;
                     }
                     player.sendMessage(SUCCES_TAG + "Started unloading cargo");
@@ -381,6 +380,11 @@ public class CargoMain extends JavaPlugin implements Listener {
                         }
                     if(finalItem == null  || !finalItem.hasPrice()){
                         player.sendMessage(ERROR_TAG + "You need to be holding a cargo item to do that!");
+                        return;
+                    }
+
+                    if(finalItem.getPrice() > economy.getBalance(player)){
+                        player.sendMessage(ERROR_TAG + "You don't have enough money to buy any " + finalItem.getName() + "!");
                         return;
                     }
 
