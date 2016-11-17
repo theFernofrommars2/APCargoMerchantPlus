@@ -43,7 +43,7 @@ public class CargoMain extends JavaPlugin implements Listener {
     public static Logger logger;
     private static Economy economy;
     private static ArrayList<Player> playersInQue;
-    private static double tax;
+    private static double unloadTax,loadTax;
     private static CargoMain instance;
     private static int delay;//ticks
 
@@ -64,14 +64,16 @@ public class CargoMain extends JavaPlugin implements Listener {
         config = getConfig();
         config.addDefault("Scan range",100.0);
         config.addDefault("Transfer delay ticks",300);
-        config.addDefault("Transfer tax percent", 0.01D);
+        config.addDefault("Load tax percent", 0.01D);
+        config.addDefault("Unload tax percent", 0.01D);
         config.addDefault("Cardinal distance",true);
         config.addDefault("Debug mode",false);
         config.options().copyDefaults(true);
         this.saveConfig();
         scanRange = config.getDouble("Scan range") >= 1.0 ? config.getDouble("Scan range") : 100.0;
         delay = config.getInt("Transfer delay ticks");
-        tax = config.getDouble("Transfer tax percent")<=1.0 && config.getDouble("Transfer tax percent")>=0.0 ? config.getDouble("Transfer tax percent") : 0.01;
+        loadTax = config.getDouble("Load tax percent")<=1.0 && config.getDouble("Load tax percent")>=0.0 ? config.getDouble("Load tax percent") : 0.01;
+        unloadTax = config.getDouble("Unload tax percent")<=1.0 && config.getDouble("Unload tax percent")>=0.0 ? config.getDouble("Unload tax percent") : 0.01;
         cardinalDistance = config.getBoolean("Cardinal distance");
         debug = config.getBoolean("Debug mode");
         //************************
@@ -257,7 +259,8 @@ public class CargoMain extends JavaPlugin implements Listener {
             sender.sendMessage( ChatColor.WHITE + "--[ " + ChatColor.DARK_AQUA + "  Movecraft Cargo " + ChatColor.WHITE + " ]--");
             sender.sendMessage(ChatColor.DARK_AQUA + "Scan Range: " + ChatColor.WHITE + scanRange + " Blocks");
             sender.sendMessage(ChatColor.DARK_AQUA + "Transfer Delay: " + ChatColor.WHITE + delay + " ticks");
-            sender.sendMessage(ChatColor.DARK_AQUA + "Tax: " + ChatColor.WHITE + 100*tax + "%");
+            sender.sendMessage(ChatColor.DARK_AQUA + "Unload Tax: " + ChatColor.WHITE + 100*unloadTax + "%");
+            sender.sendMessage(ChatColor.DARK_AQUA + "Load Tax: " + ChatColor.WHITE + 100*loadTax + "%");
             if(cardinalDistance)
                 sender.sendMessage(ChatColor.DARK_AQUA + "Distance Type: " + ChatColor.WHITE + "Cardinal");
             else
@@ -428,9 +431,14 @@ public class CargoMain extends JavaPlugin implements Listener {
         return playersInQue;
     }
 
-    public static double getTax(){
-        return tax;
+    public static double getLoadTax(){
+        return loadTax;
     }
+    
+    public static double getUnloadTax(){
+        return unloadTax;
+    }
+
 
     public static int getDelay(){
         return delay;
