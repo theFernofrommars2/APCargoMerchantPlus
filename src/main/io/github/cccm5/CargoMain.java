@@ -256,11 +256,11 @@ public class CargoMain extends JavaPlugin implements Listener {
                 sender.sendMessage(ERROR_TAG + "You don't have permision to do that!");
                 return true;
             }
-            sender.sendMessage( ChatColor.WHITE + "--[ " + ChatColor.DARK_AQUA + "  Movecraft Cargo " + ChatColor.WHITE + " ]--");
+            sender.sendMessage(ChatColor.WHITE + "--[ " + ChatColor.DARK_AQUA + "  Movecraft Cargo " + ChatColor.WHITE + " ]--");
             sender.sendMessage(ChatColor.DARK_AQUA + "Scan Range: " + ChatColor.WHITE + scanRange + " Blocks");
             sender.sendMessage(ChatColor.DARK_AQUA + "Transfer Delay: " + ChatColor.WHITE + delay + " ticks");
-            sender.sendMessage(ChatColor.DARK_AQUA + "Unload Tax: " + ChatColor.WHITE + 100*unloadTax + "%");
-            sender.sendMessage(ChatColor.DARK_AQUA + "Load Tax: " + ChatColor.WHITE + 100*loadTax + "%");
+            sender.sendMessage(ChatColor.DARK_AQUA + "Unload Tax: " + ChatColor.WHITE + String.format("%.2f",100*unloadTax) + "%");
+            sender.sendMessage(ChatColor.DARK_AQUA + "Load Tax: " + ChatColor.WHITE + String.format("%.2f",100*loadTax) + "%");
             if(cardinalDistance)
                 sender.sendMessage(ChatColor.DARK_AQUA + "Distance Type: " + ChatColor.WHITE + "Cardinal");
             else

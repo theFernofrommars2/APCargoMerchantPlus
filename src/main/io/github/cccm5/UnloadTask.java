@@ -30,7 +30,7 @@ public class UnloadTask extends CargoTask
                 inv.setItem(i,null);
             }
         }
-        originalPilot.sendMessage(CargoMain.SUCCES_TAG + "Unloaded " + count + " items for $" + String.format("%.2f", count*item.getPrice() - CargoMain.getUnloadTax()*count*item.getPrice()) + " took a tax of " + String.format("%.2f",CargoMain.getUnloadTax()*count*item.getPrice()));
+        originalPilot.sendMessage(CargoMain.SUCCES_TAG + "Unloaded " + count + " worth $" + String.format("%.2f", count*item.getPrice()) + " took a tax of " + String.format("%.2f",CargoMain.getUnloadTax()*count*item.getPrice()));
         CargoMain.getEconomy().depositPlayer(originalPilot,count*item.getPrice()*(1-CargoMain.getUnloadTax()));
 
         if(invs.size()<=1){

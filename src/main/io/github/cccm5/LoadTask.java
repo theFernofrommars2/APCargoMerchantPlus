@@ -43,13 +43,13 @@ public class LoadTask extends CargoTask
                     loaded+=maxCount;
                     this.cancel();
                     CargoMain.getQue().remove(originalPilot);
-                    originalPilot.sendMessage(CargoMain.SUCCES_TAG + "Loaded " + loaded + " items for $" + String.format("%.2f", loaded*item.getPrice() - CargoMain.getLoadTax()*loaded*item.getPrice()) + " took a tax of " + String.format("%.2f",CargoMain.getLoadTax()*loaded*item.getPrice()));
+                    originalPilot.sendMessage(CargoMain.SUCCES_TAG + "Loaded " + loaded + " items for $" + String.format("%.2f", loaded*item.getPrice() + CargoMain.getLoadTax()*loaded*item.getPrice()) + " took a tax of " + String.format("%.2f",CargoMain.getLoadTax()*loaded*item.getPrice()));
                     originalPilot.sendMessage(CargoMain.SUCCES_TAG + "You ran out of money!");
                     break;
                 }
             }
 
-        originalPilot.sendMessage(CargoMain.SUCCES_TAG + "Loaded " + loaded + " items for $" + String.format("%.2f", loaded*item.getPrice() - CargoMain.getUnloadTax()*loaded*item.getPrice()) + " took a tax of " + String.format("%.2f",CargoMain.getUnloadTax()*loaded*item.getPrice()));
+        originalPilot.sendMessage(CargoMain.SUCCES_TAG + "Loaded " + loaded + " items worth $" + String.format("%.2f", loaded*item.getPrice()) + " took a tax of " + String.format("%.2f",CargoMain.getUnloadTax()*loaded*item.getPrice()));
         CargoMain.getEconomy().withdrawPlayer(originalPilot,loaded*item.getPrice()*(1+CargoMain.getUnloadTax()));
 
         if(invs.size()<= 1){
