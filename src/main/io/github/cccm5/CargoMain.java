@@ -93,7 +93,8 @@ public class CargoMain extends JavaPlugin implements Listener {
             getServer().getPluginManager().disablePlugin(this);	
             return;
         }
-        net.citizensnpcs.api.CitizensAPI.getTraitFactory().registerTrait(net.citizensnpcs.api.trait.TraitInfo.create(CargoTrait.class));
+        if(net.citizensnpcs.api.CitizensAPI.getTraitFactory().getTrait(CargoTrait.class)==null)
+            net.citizensnpcs.api.CitizensAPI.getTraitFactory().registerTrait(net.citizensnpcs.api.trait.TraitInfo.create(CargoTrait.class));
         //************************
         //*      Load Vault      *
         //************************
@@ -434,11 +435,10 @@ public class CargoMain extends JavaPlugin implements Listener {
     public static double getLoadTax(){
         return loadTax;
     }
-    
+
     public static double getUnloadTax(){
         return unloadTax;
     }
-
 
     public static int getDelay(){
         return delay;
