@@ -34,6 +34,15 @@ public class LoadTask extends CargoTask
                     inv.setItem(i,tempItem);
                 }else{
                     maxCount = (int)(CargoMain.getEconomy().getBalance(originalPilot)/(item.getPrice()*(1+CargoMain.getLoadTax())));
+                    this.cancel();
+                    CargoMain.getQue().remove(originalPilot);
+                    originalPilot.sendMessage(CargoMain.SUCCES_TAG + "You ran out of money!");
+                    if(maxCount<=0){
+                        if(CargoMain.isDebug()){
+                            CargoMain.logger.info("Balance: " + CargoMain.getEconomy().getBalance(originalPilot) + ". maxCount: " + maxCount + ".");
+                        }
+                        break;
+                    }
                     ItemStack tempItem = item.getItem().clone();
                     if(inv.getItem(i)==null || inv.getItem(i).getType()==Material.AIR) 
                         tempItem.setAmount(maxCount);
@@ -41,9 +50,6 @@ public class LoadTask extends CargoTask
                         tempItem.setAmount(inv.getItem(i).getAmount()+maxCount);
                     inv.setItem(i,tempItem);
                     loaded+=maxCount;
-                    this.cancel();
-                    CargoMain.getQue().remove(originalPilot);
-                    originalPilot.sendMessage(CargoMain.SUCCES_TAG + "You ran out of money!");
                     if(CargoMain.isDebug()){
                         CargoMain.logger.info("Balance: " + CargoMain.getEconomy().getBalance(originalPilot) + ". maxCount: " + maxCount + ". Actual stacksize: " + tempItem.getAmount());
                     }
