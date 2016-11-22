@@ -234,7 +234,7 @@ public class CargoMain extends JavaPlugin implements Listener {
                 return true;
             }
 
-            if(economy.has(player,finalItem.getPrice()*(1+loadTax))){
+            if(!economy.has(player,finalItem.getPrice()*(1+loadTax))){
                 sender.sendMessage(ERROR_TAG + "You don't have enough money to buy any " + finalItem.getName() + "!");
                 return true;
             }
@@ -390,7 +390,7 @@ public class CargoMain extends JavaPlugin implements Listener {
                         return;
                     }
 
-                    if(economy.has(player,finalItem.getPrice()*(1+loadTax))){
+                    if(!economy.has(player,finalItem.getPrice()*(1+loadTax))){
                         player.sendMessage(ERROR_TAG + "You don't have enough money to buy any " + finalItem.getName() + "!");
                         return;
                     }
