@@ -42,6 +42,7 @@ public class LoadTask extends CargoTask
                         if(CargoMain.isDebug()){
                             CargoMain.logger.info("Balance: " + CargoMain.getEconomy().getBalance(originalPilot) + ". maxCount: " + maxCount + ".");
                         }
+                        originalPilot.sendMessage(CargoMain.SUCCES_TAG + "Loaded " + loaded + " items worth $" + String.format("%.2f", loaded*item.getPrice()) + " took a tax of " + String.format("%.2f",CargoMain.getLoadTax()*loaded*item.getPrice()));
                         return;
                     }
                     ItemStack tempItem = item.getItem().clone();
