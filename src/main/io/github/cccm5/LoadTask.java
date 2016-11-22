@@ -27,7 +27,7 @@ public class LoadTask extends CargoTask
         for(int i =0; i < inv.getSize() ; i++)
             if(inv.getItem(i)==null || inv.getItem(i).getType()==Material.AIR || inv.getItem(i).isSimilar(item.getItem())){
                 int maxCount = (inv.getItem(i)==null || inv.getItem(i).getType()==Material.AIR) ? item.getItem().getMaxStackSize() : inv.getItem(i).getMaxStackSize() - inv.getItem(i).getAmount();
-                if(CargoMain.getEconomy().has(originalPilot,item.getPrice()*maxCount*(1+CargoMain.getLoadTax()))){
+                if(CargoMain.getEconomy().getBalance(originalPilot) > item.getPrice()*maxCount*(1+CargoMain.getLoadTax())){
                     loaded+=maxCount;
                     ItemStack tempItem = item.getItem().clone();
                     tempItem.setAmount(tempItem.getMaxStackSize());
