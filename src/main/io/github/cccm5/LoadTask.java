@@ -43,8 +43,10 @@ public class LoadTask extends CargoTask
                     loaded+=maxCount;
                     this.cancel();
                     CargoMain.getQue().remove(originalPilot);
-                    originalPilot.sendMessage(CargoMain.SUCCES_TAG + "Loaded " + loaded + " items for $" + String.format("%.2f", loaded*item.getPrice() + CargoMain.getLoadTax()*loaded*item.getPrice()) + " took a tax of " + String.format("%.2f",CargoMain.getLoadTax()*loaded*item.getPrice()));
                     originalPilot.sendMessage(CargoMain.SUCCES_TAG + "You ran out of money!");
+                    if(CargoMain.isDebug()){
+                        CargoMain.logger.info("Balance: " + CargoMain.getEconomy().getBalance(originalPilot) + ". maxCount: " + maxCount + ". Actual stacksize: " + tempItem.getAmount());
+                    }
                     break;
                 }
             }
