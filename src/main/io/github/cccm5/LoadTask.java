@@ -41,7 +41,7 @@ public class LoadTask extends CargoTask
                         if(CargoMain.isDebug()){
                             CargoMain.logger.info("Balance: " + CargoMain.getEconomy().getBalance(originalPilot) + ". maxCount: " + maxCount + ".");
                         }
-                        break;
+                        return;
                     }
                     ItemStack tempItem = item.getItem().clone();
                     if(inv.getItem(i)==null || inv.getItem(i).getType()==Material.AIR) 
@@ -53,7 +53,9 @@ public class LoadTask extends CargoTask
                     if(CargoMain.isDebug()){
                         CargoMain.logger.info("Balance: " + CargoMain.getEconomy().getBalance(originalPilot) + ". maxCount: " + maxCount + ". Actual stacksize: " + tempItem.getAmount());
                     }
-                    break;
+                    originalPilot.sendMessage(CargoMain.SUCCES_TAG + "Loaded " + loaded + " items worth $" + String.format("%.2f", loaded*item.getPrice()) + " took a tax of " + String.format("%.2f",CargoMain.getLoadTax()*loaded*item.getPrice()));
+                    CargoMain.getEconomy().withdrawPlayer(originalPilot,loaded*item.getPrice()*(1+CargoMain.getLoadTax()));
+                    return;
                 }
             }
 
