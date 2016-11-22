@@ -27,13 +27,13 @@ public class LoadTask extends CargoTask
         for(int i =0; i < inv.getSize() ; i++)
             if(inv.getItem(i)==null || inv.getItem(i).getType()==Material.AIR || inv.getItem(i).isSimilar(item.getItem())){
                 int maxCount = (inv.getItem(i)==null || inv.getItem(i).getType()==Material.AIR) ? item.getItem().getMaxStackSize() : inv.getItem(i).getMaxStackSize() - inv.getItem(i).getAmount();
-                if(CargoMain.getEconomy().has(originalPilot,item.getPrice()*maxCount*(1+CargoMain.getUnloadTax()))){
+                if(CargoMain.getEconomy().has(originalPilot,item.getPrice()*maxCount*(1+CargoMain.getLoadTax()))){
                     loaded+=maxCount;
                     ItemStack tempItem = item.getItem().clone();
                     tempItem.setAmount(tempItem.getMaxStackSize());
                     inv.setItem(i,tempItem);
                 }else{
-                    maxCount = (int)(CargoMain.getEconomy().getBalance(originalPilot)/(item.getPrice()*(1+CargoMain.getUnloadTax())));
+                    maxCount = (int)(CargoMain.getEconomy().getBalance(originalPilot)/(item.getPrice()*(1+CargoMain.getLoadTax())));
                     ItemStack tempItem = item.getItem().clone();
                     if(inv.getItem(i)==null || inv.getItem(i).getType()==Material.AIR) 
                         tempItem.setAmount(maxCount);
@@ -51,8 +51,8 @@ public class LoadTask extends CargoTask
                 }
             }
 
-        originalPilot.sendMessage(CargoMain.SUCCES_TAG + "Loaded " + loaded + " items worth $" + String.format("%.2f", loaded*item.getPrice()) + " took a tax of " + String.format("%.2f",CargoMain.getUnloadTax()*loaded*item.getPrice()));
-        CargoMain.getEconomy().withdrawPlayer(originalPilot,loaded*item.getPrice()*(1+CargoMain.getUnloadTax()));
+        originalPilot.sendMessage(CargoMain.SUCCES_TAG + "Loaded " + loaded + " items worth $" + String.format("%.2f", loaded*item.getPrice()) + " took a tax of " + String.format("%.2f",CargoMain.getLoadTax()*loaded*item.getPrice()));
+        CargoMain.getEconomy().withdrawPlayer(originalPilot,loaded*item.getPrice()*(1+CargoMain.getLoadTax()));
 
         if(invs.size()<= 1){
             this.cancel();
