@@ -79,7 +79,7 @@ public class CargoMain extends JavaPlugin implements Listener {
         //************************
         //*    Load Movecraft    *
         //************************
-        if(getServer().getPluginManager().getPlugin("Movecraft") == null || getServer().getPluginManager().getPlugin("Movecraft").isEnabled() == false) {
+        if(getServer().getPluginManager().getPlugin("Movecraft") == null || !getServer().getPluginManager().getPlugin("Movecraft").isEnabled()) {
             logger.log(Level.SEVERE, "Movecraft not found or not enabled");
             getServer().getPluginManager().disablePlugin(this);	
             return;
@@ -88,7 +88,7 @@ public class CargoMain extends JavaPlugin implements Listener {
         //************************
         //*    Load  Citizens    *
         //************************
-        if(getServer().getPluginManager().getPlugin("Citizens") == null || getServer().getPluginManager().getPlugin("Citizens").isEnabled() == false) {
+        if(getServer().getPluginManager().getPlugin("Citizens") == null || !getServer().getPluginManager().getPlugin("Citizens").isEnabled()) {
             logger.log(Level.SEVERE, "Citizens 2.0 not found or not enabled");
             getServer().getPluginManager().disablePlugin(this);	
             return;
@@ -98,7 +98,7 @@ public class CargoMain extends JavaPlugin implements Listener {
         //************************
         //*      Load Vault      *
         //************************
-        if (getServer().getPluginManager().getPlugin("Vault") == null || getServer().getPluginManager().getPlugin("Vault").isEnabled() == false) {
+        if (getServer().getPluginManager().getPlugin("Vault") == null || !getServer().getPluginManager().getPlugin("Vault").isEnabled()) {
             logger.log(Level.SEVERE, "Vault not found or not enabled");
             getServer().getPluginManager().disablePlugin(this);	
             return;
