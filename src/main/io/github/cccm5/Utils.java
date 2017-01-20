@@ -1,22 +1,19 @@
 package io.github.cccm5;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryHolder;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.Location;
-import org.bukkit.World;
-
-import net.countercraft.movecraft.craft.Craft;
-import net.countercraft.movecraft.utils.MovecraftLocation;
-
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.npc.NPCRegistry;
 import net.citizensnpcs.api.trait.Trait;
+import net.countercraft.movecraft.craft.Craft;
+import net.countercraft.movecraft.utils.MovecraftLocation;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.ArrayList;
+import java.util.List;
 public class Utils
 {
     private static final Material[] INVENTORY_MATERIALS = new Material[]{Material.CHEST,Material.TRAPPED_CHEST, Material.FURNACE, Material.HOPPER,Material.DROPPER,Material.DISPENSER, Material.BREWING_STAND};
@@ -73,22 +70,19 @@ public class Utils
 
     /**
      * Gets the first inventory of a lookup material type on a craft holding a specific item, returns null if none found
-     * an input of null for item searches withought checking inventory contents
+     * an input of null for item searches without checking inventory contents
      * an input of an ItemStack with type set to Material.AIR for searches for empty space in an inventory
      * 
      * @param craft the craft to scan
      * @param item the item to look for during the scan
-     * @param lookup the materials to compare against while scaning
+     * @param lookup the materials to compare against while scanning
      * @return the first inventory matching a lookup material on the craft
      */
     public static Inventory firstInventory(Craft craft, ItemStack item, Material... lookup){
         boolean test=false;
         for(Material m : lookup){
             for(Material compare : INVENTORY_MATERIALS)
-                if(compare == m){
-                    test=true;
-                    continue;
-                }
+                if(compare == m) test = true;
             if(!test)
                 throw new IllegalArgumentException(m + " is not an inventory type");
         }
@@ -111,11 +105,11 @@ public class Utils
 
     /**
      * Gets the first inventory of a lookup material type on a craft holding a specific item, returns null if none found
-     * an input of null for item searches withought checking inventory contents
+     * an input of null for item searches without checking inventory contents
      * 
      * @param craft the craft to scan
      * @param item the item to look for during the scan
-     * @param lookup the materials to compare against while scaning
+     * @param lookup the materials to compare against while scanning
      * @return the first inventory matching a lookup material on the craft
      */
     public static Inventory firstInventoryWithSpace(Craft craft, ItemStack item, Material... lookup){
@@ -124,7 +118,6 @@ public class Utils
             for(Material compare : INVENTORY_MATERIALS)
                 if(compare == m){
                     test=true;
-                    continue;
                 }
             if(!test)
                 throw new IllegalArgumentException(m + " is not an inventory type");
@@ -150,11 +143,11 @@ public class Utils
 
     /**
      * Gets the first inventory of a lookup material type on a craft holding a specific item, returns null if none found
-     * an input of null for item searches withought checking inventory contents
+     * an input of null for item searches without checking inventory contents
      * 
      * @param craft the craft to scan
      * @param item the item to look for during the scan
-     * @param lookup the materials to compare against while scaning
+     * @param lookup the materials to compare against while scanning
      * @return the first inventory matching a lookup material on the craft
      */
     public static List<Inventory> getInventoriesWithSpace(Craft craft, ItemStack item, Material... lookup){
@@ -163,7 +156,6 @@ public class Utils
             for(Material compare : INVENTORY_MATERIALS)
                 if(compare == m){
                     test=true;
-                    continue;
                 }
             if(!test)
                 throw new IllegalArgumentException(m + " is not an inventory type");
@@ -198,12 +190,12 @@ public class Utils
 
     /**
      * Gets the first inventory of a lookup material type on a craft holding a specific item, returns null if none found
-     * an input of null for item searches withought checking inventory contents
+     * an input of null for item searches without checking inventory contents
      * an input of an ItemStack with type set to Material.AIR for searches for empty space in an inventory
      * 
      * @param craft the craft to scan
      * @param item the item to look for during the scan
-     * @param lookup the materials to compare against while scaning
+     * @param lookup the materials to compare against while scanning
      * @return the first inventory matching a lookup material on the craft
      */
     public static List<Inventory> getInventories(Craft craft, ItemStack item, Material... lookup){
@@ -212,7 +204,6 @@ public class Utils
             for(Material compare : INVENTORY_MATERIALS)
                 if(compare == m){
                     test=true;
-                    continue;
                 }
             if(!test)
                 throw new IllegalArgumentException(m + " is not an inventory type");

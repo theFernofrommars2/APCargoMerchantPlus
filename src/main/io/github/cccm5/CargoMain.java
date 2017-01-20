@@ -1,15 +1,14 @@
 package io.github.cccm5;
 
-import java.lang.Math;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.logging.Logger;
-import java.util.logging.Level;
-
-import org.bukkit.Bukkit;
+import net.citizensnpcs.api.npc.NPC;
+import net.countercraft.movecraft.craft.Craft;
+import net.countercraft.movecraft.craft.CraftManager;
+import net.countercraft.movecraft.utils.MovecraftLocation;
+import net.dandielo.citizens.traders_v3.traders.stock.Stock;
+import net.dandielo.citizens.traders_v3.traders.stock.StockItem;
+import net.dandielo.citizens.traders_v3.traits.TraderTrait;
+import net.milkbowl.vault.economy.Economy;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.command.Command;
@@ -21,25 +20,16 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import net.citizensnpcs.api.npc.NPC;
-
-import net.countercraft.movecraft.craft.Craft;
-import net.countercraft.movecraft.craft.CraftManager;
-import net.countercraft.movecraft.utils.MovecraftLocation;
-
-import net.dandielo.citizens.traders_v3.traders.stock.Stock;
-import net.dandielo.citizens.traders_v3.traders.stock.StockItem;
-import net.dandielo.citizens.traders_v3.traits.TraderTrait;
-
-import net.milkbowl.vault.economy.Economy;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 public class CargoMain extends JavaPlugin implements Listener {
     public static final String ERROR_TAG = ChatColor.RED + "Error: " + ChatColor.DARK_RED;
-    public static final String SUCCES_TAG = ChatColor.DARK_AQUA + "Cargo: " + ChatColor.WHITE;
+    public static final String SUCCESS_TAG = ChatColor.DARK_AQUA + "Cargo: " + ChatColor.WHITE;
     public static Logger logger;
     private static Economy economy;
     private static ArrayList<Player> playersInQue;
@@ -81,9 +71,9 @@ public class CargoMain extends JavaPlugin implements Listener {
         //************************
         if(getServer().getPluginManager().getPlugin("Movecraft") == null || !getServer().getPluginManager().getPlugin("Movecraft").isEnabled()) {
             logger.log(Level.SEVERE, "Movecraft not found or not enabled");
-            getServer().getPluginManager().disablePlugin(this);	
+            getServer().getPluginManager().disablePlugin(this);
             return;
-        }	
+        }
         craftManager = CraftManager.getInstance();
         //************************
         //*    Load  Citizens    *
@@ -120,7 +110,7 @@ public class CargoMain extends JavaPlugin implements Listener {
             }
 
             if(!sender.hasPermission("Cargo.unload")){
-                sender.sendMessage(ERROR_TAG + "You don't have permision to do that!");
+                sender.sendMessage(ERROR_TAG + "You don't have permission to do that!");
                 return true;
             }
             Player player = (Player) sender;
@@ -173,7 +163,7 @@ public class CargoMain extends JavaPlugin implements Listener {
                 player.sendMessage(CargoMain.ERROR_TAG + "You have no " + finalItem.getName() + " on this craft!");
                 return true;
             }
-            sender.sendMessage(SUCCES_TAG + "Started unloading cargo");
+            sender.sendMessage(SUCCESS_TAG + "Started unloading cargo");
             playersInQue.add(player);
             new UnloadTask(craftManager.getCraftByPlayer(player),stock,finalItem ).runTaskTimer(this,delay,delay);
             new ProcessingTask(player, finalItem,size).runTaskTimer(this,0,20);
@@ -187,7 +177,7 @@ public class CargoMain extends JavaPlugin implements Listener {
             }
 
             if(!sender.hasPermission("Cargo.load")){
-                sender.sendMessage(ERROR_TAG + "You don't have permision to do that!");
+                sender.sendMessage(ERROR_TAG + "You don't have permission to do that!");
                 return true;
             }
             Player player = (Player) sender;
@@ -248,13 +238,13 @@ public class CargoMain extends JavaPlugin implements Listener {
             playersInQue.add(player);
             new LoadTask(craftManager.getCraftByPlayer(player),stock,finalItem ).runTaskTimer(this,delay,delay);
             new ProcessingTask(player, finalItem,size).runTaskTimer(this,0,20);
-            sender.sendMessage(SUCCES_TAG + "Started loading cargo");
+            sender.sendMessage(SUCCESS_TAG + "Started loading cargo");
             return true;
         }
 
         if (command.getName().equalsIgnoreCase("cargo")) {
             if(!sender.hasPermission("Cargo.cargo")){
-                sender.sendMessage(ERROR_TAG + "You don't have permision to do that!");
+                sender.sendMessage(ERROR_TAG + "You don't have permission to do that!");
                 return true;
             }
             sender.sendMessage(ChatColor.WHITE + "--[ " + ChatColor.DARK_AQUA + "  Movecraft Cargo " + ChatColor.WHITE + " ]--");
@@ -280,7 +270,7 @@ public class CargoMain extends JavaPlugin implements Listener {
                 if (sign.getLine(0).equals(ChatColor.DARK_AQUA + "[UnLoad]")) {
                     Player player = e.getPlayer();
                     if(!player.hasPermission("Cargo.unload")){
-                        player.sendMessage(ERROR_TAG + "You don't have permision to do that!");
+                        player.sendMessage(ERROR_TAG + "You don't have permission to do that!");
                         return;
                     }
 
@@ -333,7 +323,7 @@ public class CargoMain extends JavaPlugin implements Listener {
                         player.sendMessage(CargoMain.ERROR_TAG + "You have no " + finalItem.getName() + " on this craft!");
                         return;
                     }
-                    player.sendMessage(SUCCES_TAG + "Started unloading cargo");
+                    player.sendMessage(SUCCESS_TAG + "Started unloading cargo");
                     playersInQue.add(player);
                     new UnloadTask(craftManager.getCraftByPlayer(player),stock,finalItem ).runTaskTimer(this,delay,delay);
                     new ProcessingTask(player, finalItem,size).runTaskTimer(this,0,20);
@@ -343,7 +333,7 @@ public class CargoMain extends JavaPlugin implements Listener {
                 if (sign.getLine(0).equals(ChatColor.DARK_AQUA + "[Load]")) {
                     Player player = e.getPlayer();
                     if(!player.hasPermission("Cargo.load")){
-                        player.sendMessage(ERROR_TAG + "You don't have permision to do that!");
+                        player.sendMessage(ERROR_TAG + "You don't have permission to do that!");
                         return;
                     }
 
@@ -403,9 +393,8 @@ public class CargoMain extends JavaPlugin implements Listener {
                     }
                     playersInQue.add(player);
                     new LoadTask(craftManager.getCraftByPlayer(player),stock,finalItem ).runTaskTimer(this,delay,delay);
-                    player.sendMessage(SUCCES_TAG + "Started loading cargo");
+                    player.sendMessage(SUCCESS_TAG + "Started loading cargo");
                     new ProcessingTask(player, finalItem,size).runTaskTimer(this,0,20);
-                    return;
                 }
             }
         }

@@ -20,8 +20,6 @@ public abstract class CargoTask extends BukkitRunnable
     protected final StockItem item;
     protected CargoTask(Craft craft, Stock stock, StockItem item){
         if (craft == null) {
-            if(CargoMain.isDebug())
-                CargoMain.logger.info("Initizalized CargoTask with craft type " + craft.getType() + ", scanning for StockItem " + item.getName() );
             throw new IllegalArgumentException("craft must not be null");
         }
         else

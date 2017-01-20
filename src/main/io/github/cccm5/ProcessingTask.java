@@ -1,17 +1,14 @@
 package io.github.cccm5;
 
+import net.dandielo.citizens.traders_v3.traders.stock.StockItem;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
-import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
-
-import net.dandielo.citizens.traders_v3.traders.stock.StockItem;
 /**
  * Write a description of class ProcessingTask here.
  * 
