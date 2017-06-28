@@ -108,65 +108,7 @@ public class CargoMain extends JavaPlugin implements Listener {
                 sender.sendMessage(ERROR_TAG + "You need to be a player to execute that command!");
                 return true;
             }
-
-            if(!sender.hasPermission("Cargo.unload")){
-                sender.sendMessage(ERROR_TAG + "You don't have permission to do that!");
-                return true;
-            }
-            Player player = (Player) sender;
-            Craft playerCraft = craftManager.getCraftByPlayer(player);
-            if(playersInQue.contains(player)){
-                sender.sendMessage(ERROR_TAG + "You're already moving cargo!");
-                return true;
-            }
-
-            if(playerCraft == null){
-                sender.sendMessage(ERROR_TAG + "You need to be piloting a craft to do that!");
-                return true;
-            }
-            NPC cargoMerchant=null;
-            double distance, lastScan = scanRange;
-            MovecraftLocation loc = playerCraft.getBlockList()[0];
-            for(NPC npc :Utils.getNPCsWithTrait(CargoTrait.class)){
-                if(!npc.isSpawned())
-                    continue;
-                distance = cardinalDistance ? Math.abs(loc.getX()-npc.getEntity().getLocation().getX()) + Math.abs(loc.getZ()-npc.getEntity().getLocation().getZ()) : Math.sqrt(Math.pow(loc.getX()-npc.getEntity().getLocation().getX(),2) + Math.pow(loc.getZ()-npc.getEntity().getLocation().getZ(),2));
-                if( distance <= lastScan){
-                    lastScan = distance;
-                    cargoMerchant = npc;
-                }
-            }
-            if(cargoMerchant == null){
-                sender.sendMessage(ERROR_TAG + "You need to be within " +  scanRange + " blocks of a merchant to use that command!");
-                return true;
-            }
-
-            if(player.getInventory().getItemInMainHand() == null || player.getInventory().getItemInMainHand().getType() == Material.AIR){
-                sender.sendMessage(ERROR_TAG + "You need to be holding a cargo item to do that!");
-                return true;
-            }
-            Stock stock = cargoMerchant.getTrait(TraderTrait.class).getStock();
-            ItemStack compareItem = player.getInventory().getItemInMainHand().clone();
-            StockItem finalItem=null;
-            for(StockItem tempItem : stock.getStock("sell"))
-                if(tempItem.getItem().isSimilar(compareItem)){
-                    finalItem = tempItem;
-                    break;
-                }
-            if(finalItem == null || !finalItem.hasPrice()){
-                sender.sendMessage(ERROR_TAG + "You need to be holding a cargo item to do that!");
-                return true;
-            }
-
-            int size = Utils.getInventories(playerCraft, finalItem.getItem(), Material.CHEST, Material.TRAPPED_CHEST).size();
-            if(size <=0 ){
-                player.sendMessage(CargoMain.ERROR_TAG + "You have no " + finalItem.getName() + " on this craft!");
-                return true;
-            }
-            sender.sendMessage(SUCCESS_TAG + "Started unloading cargo");
-            playersInQue.add(player);
-            new UnloadTask(craftManager.getCraftByPlayer(player),stock,finalItem ).runTaskTimer(this,delay,delay);
-            new ProcessingTask(player, finalItem,size).runTaskTimer(this,0,20);
+            unload((Player) sender);
             return true;
         }
 
@@ -175,70 +117,7 @@ public class CargoMain extends JavaPlugin implements Listener {
                 sender.sendMessage(ERROR_TAG + "You need to be a player to execute that command!");
                 return true;
             }
-
-            if(!sender.hasPermission("Cargo.load")){
-                sender.sendMessage(ERROR_TAG + "You don't have permission to do that!");
-                return true;
-            }
-            Player player = (Player) sender;
-            Craft playerCraft = craftManager.getCraftByPlayer(player);
-            if(playersInQue.contains(player)){
-                sender.sendMessage(ERROR_TAG + "You're already moving cargo!");
-                return true;
-            }
-
-            if(playerCraft == null){
-                sender.sendMessage(ERROR_TAG + "You need to be piloting a craft to do that!");
-                return true;
-            }
-            NPC cargoMerchant=null;
-            double distance, lastScan = scanRange;
-            MovecraftLocation loc = playerCraft.getBlockList()[0];
-            for(NPC npc :Utils.getNPCsWithTrait(CargoTrait.class)){
-                if(!npc.isSpawned())
-                    continue;
-                distance = cardinalDistance ? Math.abs(loc.getX()-npc.getEntity().getLocation().getX()) + Math.abs(loc.getZ()-npc.getEntity().getLocation().getZ()) : Math.sqrt(Math.pow(loc.getX()-npc.getEntity().getLocation().getX(),2) + Math.pow(loc.getZ()-npc.getEntity().getLocation().getZ(),2));
-                if( distance <= lastScan){
-                    lastScan = distance;
-                    cargoMerchant = npc;
-                }
-            }
-            if(cargoMerchant == null){
-                sender.sendMessage(ERROR_TAG + "You need to be within " +  scanRange + " blocks of a merchant to use that command!");
-                return true;
-            }
-
-            if(player.getInventory().getItemInMainHand() == null || player.getInventory().getItemInMainHand().getType() == Material.AIR){
-                sender.sendMessage(ERROR_TAG + "You need to be holding a cargo item to do that!");
-                return true;
-            }
-            Stock stock = cargoMerchant.getTrait(TraderTrait.class).getStock();
-            ItemStack compareItem = player.getInventory().getItemInMainHand().clone();
-            StockItem finalItem=null;
-            for(StockItem tempItem : stock.getStock("buy"))
-                if(tempItem.getItem().isSimilar(compareItem)){
-                    finalItem = tempItem;
-                    break;
-                }
-            if(finalItem == null  || !finalItem.hasPrice()){
-                sender.sendMessage(ERROR_TAG + "You need to be holding a cargo item to do that!");
-                return true;
-            }
-
-            if(!economy.has(player,finalItem.getPrice()*(1+loadTax))){
-                sender.sendMessage(ERROR_TAG + "You don't have enough money to buy any " + finalItem.getName() + "!");
-                return true;
-            }
-
-            int size = Utils.getInventoriesWithSpace(playerCraft, finalItem.getItem(), Material.CHEST, Material.TRAPPED_CHEST).size();
-            if(size <=0 ){
-                player.sendMessage(CargoMain.ERROR_TAG + "You don't have any space for " + finalItem.getName() + " on this craft!");
-                return true;
-            }
-            playersInQue.add(player);
-            new LoadTask(craftManager.getCraftByPlayer(player),stock,finalItem ).runTaskTimer(this,delay,delay);
-            new ProcessingTask(player, finalItem,size).runTaskTimer(this,0,20);
-            sender.sendMessage(SUCCESS_TAG + "Started loading cargo");
+            load((Player) sender);
             return true;
         }
 
@@ -268,133 +147,11 @@ public class CargoMain extends JavaPlugin implements Listener {
             if (e.getClickedBlock().getType() == Material.SIGN || e.getClickedBlock().getType() == Material.SIGN_POST) {
                 Sign sign = (Sign) e.getClickedBlock().getState();
                 if (sign.getLine(0).equals(ChatColor.DARK_AQUA + "[UnLoad]")) {
-                    Player player = e.getPlayer();
-                    if(!player.hasPermission("Cargo.unload")){
-                        player.sendMessage(ERROR_TAG + "You don't have permission to do that!");
-                        return;
-                    }
-
-                    Craft playerCraft = craftManager.getCraftByPlayer(e.getPlayer());
-                    if(playersInQue.contains(player)){
-                        player.sendMessage(ERROR_TAG + "You're already moving cargo!");
-                        return;
-                    }
-
-                    if(playerCraft == null){
-                        player.sendMessage(ERROR_TAG + "You need to be piloting a craft to do that!");
-                        return;
-                    }
-                    NPC cargoMerchant=null;
-                    double distance, lastScan = scanRange;
-                    MovecraftLocation loc = playerCraft.getBlockList()[0];
-                    for(NPC npc :Utils.getNPCsWithTrait(CargoTrait.class)){
-                        if(!npc.isSpawned())
-                            continue;
-                        distance = cardinalDistance ? Math.abs(loc.getX()-npc.getEntity().getLocation().getX()) + Math.abs(loc.getZ()-npc.getEntity().getLocation().getZ()) : Math.sqrt(Math.pow(loc.getX()-npc.getEntity().getLocation().getX(),2) + Math.pow(loc.getZ()-npc.getEntity().getLocation().getZ(),2));
-                        if( distance <= lastScan){
-                            lastScan = distance;
-                            cargoMerchant = npc;
-                        }
-                    }
-                    if(cargoMerchant == null){
-                        player.sendMessage(ERROR_TAG + "You need to be within " +  scanRange + " blocks of a merchant to use that command!");
-                        return;
-                    }
-
-                    if(player.getInventory().getItemInMainHand() == null || player.getInventory().getItemInMainHand().getType() == Material.AIR){
-                        player.sendMessage(ERROR_TAG + "You need to be holding a cargo item to do that!");
-                        return;
-                    }
-                    Stock stock = cargoMerchant.getTrait(TraderTrait.class).getStock();
-                    ItemStack compareItem = player.getInventory().getItemInMainHand().clone();
-                    StockItem finalItem=null;
-                    for(StockItem tempItem : stock.getStock("sell"))
-                        if(tempItem.getItem().isSimilar(compareItem)){
-                            finalItem = tempItem;
-                            break;
-                        }
-                    if(finalItem == null || !finalItem.hasPrice()){
-                        player.sendMessage(ERROR_TAG + "You need to be holding a cargo item to do that!");
-                        return;
-                    }
-
-                    int size = Utils.getInventories(playerCraft, finalItem.getItem(), Material.CHEST, Material.TRAPPED_CHEST).size();
-                    if(size <=0 ){
-                        player.sendMessage(CargoMain.ERROR_TAG + "You have no " + finalItem.getName() + " on this craft!");
-                        return;
-                    }
-                    player.sendMessage(SUCCESS_TAG + "Started unloading cargo");
-                    playersInQue.add(player);
-                    new UnloadTask(craftManager.getCraftByPlayer(player),stock,finalItem ).runTaskTimer(this,delay,delay);
-                    new ProcessingTask(player, finalItem,size).runTaskTimer(this,0,20);
+                    unload(e.getPlayer());
                     return;
                 }
-
                 if (sign.getLine(0).equals(ChatColor.DARK_AQUA + "[Load]")) {
-                    Player player = e.getPlayer();
-                    if(!player.hasPermission("Cargo.load")){
-                        player.sendMessage(ERROR_TAG + "You don't have permission to do that!");
-                        return;
-                    }
-
-                    Craft playerCraft = craftManager.getCraftByPlayer(e.getPlayer());
-                    if(playersInQue.contains(player)){
-                        player.sendMessage(ERROR_TAG + "You're already moving cargo!");
-                        return;
-                    }
-
-                    if(playerCraft == null){
-                        player.sendMessage(ERROR_TAG + "You need to be piloting a craft to do that!");
-                        return;
-                    }
-                    NPC cargoMerchant=null;
-                    double distance, lastScan = scanRange;
-                    MovecraftLocation loc = playerCraft.getBlockList()[0];
-                    for(NPC npc :Utils.getNPCsWithTrait(CargoTrait.class)){
-                        if(!npc.isSpawned())
-                            continue;
-                        distance = cardinalDistance ? Math.abs(loc.getX()-npc.getEntity().getLocation().getX()) + Math.abs(loc.getZ()-npc.getEntity().getLocation().getZ()) : Math.sqrt(Math.pow(loc.getX()-npc.getEntity().getLocation().getX(),2) + Math.pow(loc.getZ()-npc.getEntity().getLocation().getZ(),2));
-                        if( distance <= lastScan){
-                            lastScan = distance;
-                            cargoMerchant = npc;
-                        }
-                    }
-                    if(cargoMerchant == null){
-                        player.sendMessage(ERROR_TAG + "You need to be within " +  scanRange + " blocks of a merchant to use that command!");
-                        return;
-                    }
-
-                    if(player.getInventory().getItemInMainHand() == null || player.getInventory().getItemInMainHand().getType() == Material.AIR){
-                        player.sendMessage(ERROR_TAG + "You need to be holding a cargo item to do that!");
-                        return;
-                    }
-                    Stock stock = cargoMerchant.getTrait(TraderTrait.class).getStock();
-                    ItemStack compareItem = player.getInventory().getItemInMainHand().clone();
-                    StockItem finalItem=null;
-                    for(StockItem tempItem : stock.getStock("buy"))
-                        if(tempItem.getItem().isSimilar(compareItem)){
-                            finalItem = tempItem;
-                            break;
-                        }
-                    if(finalItem == null  || !finalItem.hasPrice()){
-                        player.sendMessage(ERROR_TAG + "You need to be holding a cargo item to do that!");
-                        return;
-                    }
-
-                    if(!economy.has(player,finalItem.getPrice()*(1+loadTax))){
-                        player.sendMessage(ERROR_TAG + "You don't have enough money to buy any " + finalItem.getName() + "!");
-                        return;
-                    }
-
-                    int size = Utils.getInventoriesWithSpace(playerCraft, finalItem.getItem(), Material.CHEST, Material.TRAPPED_CHEST).size();
-                    if(size <=0 ){
-                        player.sendMessage(CargoMain.ERROR_TAG + "You have no space for " + finalItem.getName() + " on this craft!");
-                        return;
-                    }
-                    playersInQue.add(player);
-                    new LoadTask(craftManager.getCraftByPlayer(player),stock,finalItem ).runTaskTimer(this,delay,delay);
-                    player.sendMessage(SUCCESS_TAG + "Started loading cargo");
-                    new ProcessingTask(player, finalItem,size).runTaskTimer(this,0,20);
+                    load(e.getPlayer());
                 }
             }
         }
@@ -435,6 +192,143 @@ public class CargoMain extends JavaPlugin implements Listener {
 
     public static CargoMain getInstance(){
         return instance;
+    }
+
+    private void unload(Player player){
+
+        if(!player.hasPermission("Cargo.unload")){
+            player.sendMessage(ERROR_TAG + "You don't have permission to do that!");
+            return;
+        }
+        Craft playerCraft = craftManager.getCraftByPlayer(player);
+        if(playersInQue.contains(player)){
+            player.sendMessage(ERROR_TAG + "You're already moving cargo!");
+            return;
+        }
+
+        if(playerCraft == null){
+            player.sendMessage(ERROR_TAG + "You need to be piloting a craft to do that!");
+            return;
+        }
+        //NPC cargoMerchant=null;
+        List<NPC> nearbyMerchants = new ArrayList<>();
+        double distance;//, lastScan = scanRange;
+        MovecraftLocation loc = playerCraft.getBlockList()[0];
+        for(NPC npc :Utils.getNPCsWithTrait(CargoTrait.class)){
+            if(!npc.isSpawned())
+                continue;
+            distance = cardinalDistance ? Math.abs(loc.getX()-npc.getEntity().getLocation().getX()) + Math.abs(loc.getZ()-npc.getEntity().getLocation().getZ()) : Math.sqrt(Math.pow(loc.getX()-npc.getEntity().getLocation().getX(),2) + Math.pow(loc.getZ()-npc.getEntity().getLocation().getZ(),2));
+            if( distance <= scanRange){
+                nearbyMerchants.add(npc);
+            }
+        }
+        if(nearbyMerchants.size()==0){
+            player.sendMessage(ERROR_TAG + "You need to be within " +  scanRange + " blocks of a merchant to use that command!");
+            return;
+        }
+
+        if(player.getInventory().getItemInMainHand() == null || player.getInventory().getItemInMainHand().getType() == Material.AIR){
+            player.sendMessage(ERROR_TAG + "You need to be holding a cargo item to do that!");
+            return;
+        }
+        Stock stock =null;
+        StockItem finalItem = null;
+        for(NPC cargoMerchant : nearbyMerchants) {
+            if(finalItem!=null)
+                break;
+            stock = cargoMerchant.getTrait(TraderTrait.class).getStock();
+            ItemStack compareItem = player.getInventory().getItemInMainHand().clone();
+            finalItem = null;
+            for (StockItem tempItem : stock.getStock("sell"))
+                if (tempItem.getItem().isSimilar(compareItem)) {
+                    finalItem = tempItem;
+                    break;
+                }
+            if (finalItem == null || !finalItem.hasPrice()) {
+                player.sendMessage(ERROR_TAG + "You need to be holding a cargo item to do that!");
+                return;
+            }
+        }
+        assert finalItem!=null;
+        int size = Utils.getInventories(playerCraft, finalItem.getItem(), Material.CHEST, Material.TRAPPED_CHEST).size();
+        if(size <=0 ){
+            player.sendMessage(CargoMain.ERROR_TAG + "You have no " + finalItem.getName() + " on this craft!");
+            return;
+        }
+        player.sendMessage(SUCCESS_TAG + "Started unloading cargo");
+        playersInQue.add(player);
+        new UnloadTask(craftManager.getCraftByPlayer(player),stock,finalItem ).runTaskTimer(this,delay,delay);
+        new ProcessingTask(player, finalItem,size).runTaskTimer(this,0,20);
+    }
+
+    private void load(Player player){
+        if(!player.hasPermission("Cargo.load")){
+            player.sendMessage(ERROR_TAG + "You don't have permission to do that!");
+            return;
+        }
+        Craft playerCraft = craftManager.getCraftByPlayer(player);
+        if(playersInQue.contains(player)){
+            player.sendMessage(ERROR_TAG + "You're already moving cargo!");
+            return;
+        }
+
+        if(playerCraft == null){
+            player.sendMessage(ERROR_TAG + "You need to be piloting a craft to do that!");
+            return;
+        }
+        //NPC cargoMerchant=null;
+        List<NPC> nearbyMerchants = new ArrayList<>();
+        double distance;//, lastScan = scanRange;
+        MovecraftLocation loc = playerCraft.getBlockList()[0];
+        for(NPC npc :Utils.getNPCsWithTrait(CargoTrait.class)){
+            if(!npc.isSpawned())
+                continue;
+            distance = cardinalDistance ? Math.abs(loc.getX()-npc.getEntity().getLocation().getX()) + Math.abs(loc.getZ()-npc.getEntity().getLocation().getZ()) : Math.sqrt(Math.pow(loc.getX()-npc.getEntity().getLocation().getX(),2) + Math.pow(loc.getZ()-npc.getEntity().getLocation().getZ(),2));
+            if( distance <= scanRange){
+                nearbyMerchants.add(npc);
+            }
+        }
+        if(nearbyMerchants.size()==0){
+            player.sendMessage(ERROR_TAG + "You need to be within " +  scanRange + " blocks of a merchant to use that command!");
+            return;
+        }
+
+        if(player.getInventory().getItemInMainHand() == null || player.getInventory().getItemInMainHand().getType() == Material.AIR){
+            player.sendMessage(ERROR_TAG + "You need to be holding a cargo item to do that!");
+            return;
+        }
+        StockItem finalItem = null;
+        Stock stock = null;
+        for(NPC cargoMerchant : nearbyMerchants) {
+            if(finalItem!=null)
+                break;
+            stock = cargoMerchant.getTrait(TraderTrait.class).getStock();
+            ItemStack compareItem = player.getInventory().getItemInMainHand().clone();
+            for (StockItem tempItem : stock.getStock("buy"))
+                if (tempItem.getItem().isSimilar(compareItem)) {
+                    finalItem = tempItem;
+                    break;
+                }
+            if (finalItem == null || !finalItem.hasPrice()) {
+                player.sendMessage(ERROR_TAG + "You need to be holding a cargo item to do that!");
+                return;
+            }
+        }
+        assert finalItem != null;
+        if(!economy.has(player,finalItem.getPrice()*(1+loadTax))){
+            player.sendMessage(ERROR_TAG + "You don't have enough money to buy any " + finalItem.getName() + "!");
+            return;
+        }
+
+        int size = Utils.getInventoriesWithSpace(playerCraft, finalItem.getItem(), Material.CHEST, Material.TRAPPED_CHEST).size();
+        if(size <=0 ){
+            player.sendMessage(CargoMain.ERROR_TAG + "You don't have any space for " + finalItem.getName() + " on this craft!");
+            return;
+        }
+        playersInQue.add(player);
+        new LoadTask(craftManager.getCraftByPlayer(player),stock,finalItem ).runTaskTimer(this,delay,delay);
+        new ProcessingTask(player, finalItem,size).runTaskTimer(this,0,20);
+        player.sendMessage(SUCCESS_TAG + "Started loading cargo");
     }
 
 }

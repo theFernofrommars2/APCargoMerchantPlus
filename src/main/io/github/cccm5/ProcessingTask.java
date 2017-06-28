@@ -18,15 +18,11 @@ import org.bukkit.scoreboard.Scoreboard;
 public class ProcessingTask extends BukkitRunnable implements Listener
 {
     private static final int DELAY_BETWEEN_DISPLAY = 1;
-    private int remainingTime,delay,remainingChests;
+    private int remainingTime,remainingChests;
     private final Player player;
     private final StockItem item;
     private Scoreboard board;
     private Objective objective;
-    /**
-     * @param delay the delay between executions in seconds
-     * @param totalTime the totalTime in seconds
-     */
     public ProcessingTask(Player player, StockItem item, int remainingChests){//, int remainingChests){
         if (item == null) 
             throw new IllegalArgumentException("item must not be null");
@@ -36,7 +32,6 @@ public class ProcessingTask extends BukkitRunnable implements Listener
         this.item = item;
         this.remainingTime = CargoMain.getDelay()/20;
         this.remainingChests = remainingChests;
-        //this.delay = delay;
         board = Bukkit.getScoreboardManager().getNewScoreboard();
         objective = item.getName().length()<=14 ? board.registerNewObjective(ChatColor.DARK_AQUA + item.getName(), "dummy") : board.registerNewObjective(ChatColor.DARK_AQUA + "Cargo", "dummy");
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
