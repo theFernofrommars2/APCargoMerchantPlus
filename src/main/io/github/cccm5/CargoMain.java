@@ -239,7 +239,7 @@ public class CargoMain extends JavaPlugin implements Listener {
             stock = cargoMerchant.getTrait(TraderTrait.class).getStock();
             ItemStack compareItem = player.getInventory().getItemInMainHand().clone();
             finalItem = null;
-            for (StockItem tempItem : stock.getStock("sell"))
+            for (StockItem tempItem : stock.getStock("buy"))
                 if (tempItem.getItem().isSimilar(compareItem)) {
                     finalItem = tempItem;
                     break;
@@ -304,7 +304,7 @@ public class CargoMain extends JavaPlugin implements Listener {
                 break;
             stock = cargoMerchant.getTrait(TraderTrait.class).getStock();
             ItemStack compareItem = player.getInventory().getItemInMainHand().clone();
-            for (StockItem tempItem : stock.getStock("buy"))
+            for (StockItem tempItem : stock.getStock("sell"))
                 if (tempItem.getItem().isSimilar(compareItem)) {
                     finalItem = tempItem;
                     break;
