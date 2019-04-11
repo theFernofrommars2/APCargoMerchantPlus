@@ -261,15 +261,19 @@ public class CargoMain extends JavaPlugin implements Listener {
             ItemStack compareItem = player.getInventory().getItemInMainHand().clone();
             finalItem = null;
             for (TradeGUIPage page : tradeGUI.getPages()) {
-                for (AGUIItem tempItem : page.getItems(true))
+                if (page == null) continue;
+                for (AGUIItem tempItem : page.getItems(true)) {
+                    if (tempItem == null) continue;
                     if (tempItem.getMainItem().isSimilar(compareItem)) {
                         finalItem = (TradableGUIItem) tempItem;
                         break;
                     }
-                if (finalItem == null || !finalItem.isShowPrice()) {
-                    player.sendMessage(ERROR_TAG + "You need to be holding a cargo item to do that!");
-                    return;
                 }
+                    if (finalItem == null || finalItem.getTradePrice() == 0.0) {
+                        player.sendMessage(ERROR_TAG + "You need to be holding a cargo item to do that!");
+                        return;
+                    }
+
             }
         }
         assert finalItem!=null;
@@ -317,6 +321,7 @@ public class CargoMain extends JavaPlugin implements Listener {
         }
 
         if(player.getInventory().getItemInMainHand() == null || player.getInventory().getItemInMainHand().getType() == Material.AIR){
+            logger.info(player.getInventory().getItemInMainHand().getType().name());
             player.sendMessage(ERROR_TAG + "You need to be holding a cargo item to do that!");
             return;
         }
@@ -330,26 +335,31 @@ public class CargoMain extends JavaPlugin implements Listener {
             TradeGUI tradeGUI = (TradeGUI) gui;
             ItemStack compareItem = player.getInventory().getItemInMainHand().clone();
             for (TradeGUIPage page : tradeGUI.getPages()) {
-                for (AGUIItem tempItem : page.getItems(false))
+                if (page == null) continue;
+                for (AGUIItem tempItem : page.getItems(false)) {
+                    if (tempItem == null) continue;
                     if (tempItem.getMainItem().isSimilar(compareItem)) {
                         finalItem = (TradableGUIItem) tempItem;
                         break;
                     }
-                if (finalItem == null || finalItem.getTradePrice() == 0.0) {
-                    player.sendMessage(ERROR_TAG + "You need to be holding a cargo item to do that!");
-                    return;
                 }
+                if (finalItem != null)
+                    break;
+            }
+            if (finalItem == null || finalItem.getTradePrice() == 0.0) {
+                player.sendMessage(ERROR_TAG + "You need to be holding a cargo item to do that!");
+                return;
             }
         }
         assert finalItem != null;
         if(!economy.has(player,finalItem.getTradePrice()*(1+loadTax))){
-            player.sendMessage(ERROR_TAG + "You don't have enough money to buy any " + finalItem.getDisplayName() + "!");
+            player.sendMessage(ERROR_TAG + "You don't have enough money to buy any " + finalItem.getMainItem().getItemMeta().getDisplayName() + "!");
             return;
         }
 
         int size = Utils.getInventoriesWithSpace(playerCraft, finalItem.getMainItem(), Material.CHEST, Material.TRAPPED_CHEST).size();
         if(size <=0 ){
-            player.sendMessage(CargoMain.ERROR_TAG + "You don't have any space for " + finalItem.getDisplayName() + " on this craft!");
+            player.sendMessage(CargoMain.ERROR_TAG + "You don't have any space for " + finalItem.getMainItem().getItemMeta().getDisplayName() + " on this craft!");
             return;
         }
         playersInQue.add(player);
