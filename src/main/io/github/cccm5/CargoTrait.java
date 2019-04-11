@@ -16,7 +16,7 @@ public class CargoTrait extends Trait
 
     @Override
     public void onAttach(){
-        if(!this.npc.hasTrait(net.dandielo.citizens.traders_v3.traits.TraderTrait.class))
+        if(!this.npc.hasTrait(nl.thewgbbroz.dtltraders.citizens.TraderTrait.class))
             this.npc.removeTrait(CargoTrait.class);
     }
 

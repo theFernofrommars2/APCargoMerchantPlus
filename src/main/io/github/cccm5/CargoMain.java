@@ -3,10 +3,14 @@ package io.github.cccm5;
 import net.citizensnpcs.api.npc.NPC;
 import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.craft.CraftManager;
-import net.countercraft.movecraft.utils.MovecraftLocation;
-import net.dandielo.citizens.traders_v3.traders.stock.Stock;
-import net.dandielo.citizens.traders_v3.traders.stock.StockItem;
-import net.dandielo.citizens.traders_v3.traits.TraderTrait;
+import net.countercraft.movecraft.MovecraftLocation;
+import nl.thewgbbroz.dtltraders.Main;
+import nl.thewgbbroz.dtltraders.guis.AGUI;
+import nl.thewgbbroz.dtltraders.guis.tradegui.TradeGUI;
+import nl.thewgbbroz.dtltraders.guis.tradegui.TradeGUIPage;
+import nl.thewgbbroz.dtltraders.guis.tradegui.items.AGUIItem;
+import nl.thewgbbroz.dtltraders.guis.tradegui.items.TradableGUIItem;
+import nl.thewgbbroz.dtltraders.citizens.TraderTrait;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -21,6 +25,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
@@ -36,7 +41,9 @@ public class CargoMain extends JavaPlugin implements Listener {
     private static double unloadTax,loadTax;
     private static CargoMain instance;
     private static int delay;//ticks
-
+    private static boolean isPre1_13 = false;
+    private static Material SIGN_POST = Material.getMaterial("SIGN_POST");
+    private static Main dtlTradersPlugin;
     private CraftManager craftManager;
     private FileConfiguration config;
     private boolean cardinalDistance;
@@ -48,6 +55,13 @@ public class CargoMain extends JavaPlugin implements Listener {
         this.getServer().getPluginManager().registerEvents(this, this);
         playersInQue = new ArrayList<Player>();
         instance = this;
+        //************************
+        //* Check server version *
+        //************************
+        String packageName = getServer().getClass().getPackage().getName();
+        String version = packageName.substring(packageName.lastIndexOf('.') + 1);
+        String[] parts = version.split("_");
+        isPre1_13 = Integer.parseInt(parts[1]) < 13;
         //************************
         //*       Configs        *
         //************************
@@ -92,7 +106,12 @@ public class CargoMain extends JavaPlugin implements Listener {
             logger.log(Level.SEVERE, "Vault not found or not enabled");
             getServer().getPluginManager().disablePlugin(this);	
             return;
-        } 
+        }
+        Plugin traders = getServer().getPluginManager().getPlugin("dtlTraders");
+        if (traders == null  || !(traders instanceof Main)){
+            getServer().getPluginManager().disablePlugin(this);
+        }
+        dtlTradersPlugin = (Main) traders;
         economy = getServer().getServicesManager().getRegistration(Economy.class).getProvider();
     }
 
@@ -144,7 +163,7 @@ public class CargoMain extends JavaPlugin implements Listener {
     @EventHandler
     public void onSignClick(PlayerInteractEvent e) {
         if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            if (e.getClickedBlock().getType() == Material.SIGN || e.getClickedBlock().getType() == Material.SIGN_POST) {
+            if (e.getClickedBlock().getType() == Material.WALL_SIGN || e.getClickedBlock().getType() == (isPre1_13 ? SIGN_POST : Material.SIGN)) {
                 Sign sign = (Sign) e.getClickedBlock().getState();
                 if (sign.getLine(0).equals(ChatColor.DARK_AQUA + "[UnLoad]")) {
                     unload(e.getPlayer());
@@ -159,7 +178,7 @@ public class CargoMain extends JavaPlugin implements Listener {
 
     @EventHandler
     public void onSignPlace(SignChangeEvent e){
-        if(e.getBlock().getType().equals(Material.SIGN) || e.getBlock().getType().equals(Material.WALL_SIGN) || e.getBlock().getType().equals(Material.SIGN_POST)){
+        if(e.getBlock().getType().equals(Material.SIGN) || e.getBlock().getType().equals(Material.WALL_SIGN) || e.getBlock().getType().equals(SIGN_POST)){
             if(ChatColor.stripColor(e.getLine(0)).equalsIgnoreCase("[Load]") || ChatColor.stripColor(e.getLine(0)).equalsIgnoreCase("[UnLoad]")){
                 e.setLine(0,ChatColor.DARK_AQUA + (ChatColor.stripColor(e.getLine(0))).replaceAll("u","U").replaceAll("l","L"));
             }
@@ -213,7 +232,7 @@ public class CargoMain extends JavaPlugin implements Listener {
         //NPC cargoMerchant=null;
         List<NPC> nearbyMerchants = new ArrayList<>();
         double distance;//, lastScan = scanRange;
-        MovecraftLocation loc = playerCraft.getBlockList()[0];
+        MovecraftLocation loc = playerCraft.getHitBox().getMidPoint();
         for(NPC npc :Utils.getNPCsWithTrait(CargoTrait.class)){
             if(!npc.isSpawned())
                 continue;
@@ -231,33 +250,37 @@ public class CargoMain extends JavaPlugin implements Listener {
             player.sendMessage(ERROR_TAG + "You need to be holding a cargo item to do that!");
             return;
         }
-        Stock stock =null;
-        StockItem finalItem = null;
+        String guiName;
+        TradableGUIItem finalItem = null;
         for(NPC cargoMerchant : nearbyMerchants) {
             if(finalItem!=null)
                 break;
-            stock = cargoMerchant.getTrait(TraderTrait.class).getStock();
+            guiName = cargoMerchant.getTrait(TraderTrait.class).getGUIName();
+            AGUI gui = dtlTradersPlugin.getGuiListService().getGUI(guiName);
+            TradeGUI tradeGUI = (TradeGUI) gui;
             ItemStack compareItem = player.getInventory().getItemInMainHand().clone();
             finalItem = null;
-            for (StockItem tempItem : stock.getStock("buy"))
-                if (tempItem.getItem().isSimilar(compareItem)) {
-                    finalItem = tempItem;
-                    break;
+            for (TradeGUIPage page : tradeGUI.getPages()) {
+                for (AGUIItem tempItem : page.getItems(true))
+                    if (tempItem.getMainItem().isSimilar(compareItem)) {
+                        finalItem = (TradableGUIItem) tempItem;
+                        break;
+                    }
+                if (finalItem == null || !finalItem.isShowPrice()) {
+                    player.sendMessage(ERROR_TAG + "You need to be holding a cargo item to do that!");
+                    return;
                 }
-            if (finalItem == null || !finalItem.hasPrice()) {
-                player.sendMessage(ERROR_TAG + "You need to be holding a cargo item to do that!");
-                return;
             }
         }
         assert finalItem!=null;
-        int size = Utils.getInventories(playerCraft, finalItem.getItem(), Material.CHEST, Material.TRAPPED_CHEST).size();
+        int size = Utils.getInventories(playerCraft, finalItem.getMainItem(), Material.CHEST, Material.TRAPPED_CHEST).size();
         if(size <=0 ){
-            player.sendMessage(CargoMain.ERROR_TAG + "You have no " + finalItem.getName() + " on this craft!");
+            player.sendMessage(CargoMain.ERROR_TAG + "You have no " + finalItem.getDisplayName() + " on this craft!");
             return;
         }
         player.sendMessage(SUCCESS_TAG + "Started unloading cargo");
         playersInQue.add(player);
-        new UnloadTask(craftManager.getCraftByPlayer(player),stock,finalItem ).runTaskTimer(this,delay,delay);
+        new UnloadTask(craftManager.getCraftByPlayer(player),finalItem ).runTaskTimer(this,delay,delay);
         new ProcessingTask(player, finalItem,size).runTaskTimer(this,0,20);
     }
 
@@ -279,7 +302,7 @@ public class CargoMain extends JavaPlugin implements Listener {
         //NPC cargoMerchant=null;
         List<NPC> nearbyMerchants = new ArrayList<>();
         double distance;//, lastScan = scanRange;
-        MovecraftLocation loc = playerCraft.getBlockList()[0];
+        MovecraftLocation loc = playerCraft.getHitBox().getMidPoint();
         for(NPC npc :Utils.getNPCsWithTrait(CargoTrait.class)){
             if(!npc.isSpawned())
                 continue;
@@ -297,36 +320,40 @@ public class CargoMain extends JavaPlugin implements Listener {
             player.sendMessage(ERROR_TAG + "You need to be holding a cargo item to do that!");
             return;
         }
-        StockItem finalItem = null;
-        Stock stock = null;
+        String guiName;
+        TradableGUIItem finalItem = null;
         for(NPC cargoMerchant : nearbyMerchants) {
             if(finalItem!=null)
                 break;
-            stock = cargoMerchant.getTrait(TraderTrait.class).getStock();
+            guiName = cargoMerchant.getTrait(TraderTrait.class).getGUIName();
+            AGUI gui = dtlTradersPlugin.getGuiListService().getGUI(guiName);
+            TradeGUI tradeGUI = (TradeGUI) gui;
             ItemStack compareItem = player.getInventory().getItemInMainHand().clone();
-            for (StockItem tempItem : stock.getStock("sell"))
-                if (tempItem.getItem().isSimilar(compareItem)) {
-                    finalItem = tempItem;
-                    break;
+            for (TradeGUIPage page : tradeGUI.getPages()) {
+                for (AGUIItem tempItem : page.getItems(false))
+                    if (tempItem.getMainItem().isSimilar(compareItem)) {
+                        finalItem = (TradableGUIItem) tempItem;
+                        break;
+                    }
+                if (finalItem == null || finalItem.getTradePrice() == 0.0) {
+                    player.sendMessage(ERROR_TAG + "You need to be holding a cargo item to do that!");
+                    return;
                 }
-            if (finalItem == null || !finalItem.hasPrice()) {
-                player.sendMessage(ERROR_TAG + "You need to be holding a cargo item to do that!");
-                return;
             }
         }
         assert finalItem != null;
-        if(!economy.has(player,finalItem.getPrice()*(1+loadTax))){
-            player.sendMessage(ERROR_TAG + "You don't have enough money to buy any " + finalItem.getName() + "!");
+        if(!economy.has(player,finalItem.getTradePrice()*(1+loadTax))){
+            player.sendMessage(ERROR_TAG + "You don't have enough money to buy any " + finalItem.getDisplayName() + "!");
             return;
         }
 
-        int size = Utils.getInventoriesWithSpace(playerCraft, finalItem.getItem(), Material.CHEST, Material.TRAPPED_CHEST).size();
+        int size = Utils.getInventoriesWithSpace(playerCraft, finalItem.getMainItem(), Material.CHEST, Material.TRAPPED_CHEST).size();
         if(size <=0 ){
-            player.sendMessage(CargoMain.ERROR_TAG + "You don't have any space for " + finalItem.getName() + " on this craft!");
+            player.sendMessage(CargoMain.ERROR_TAG + "You don't have any space for " + finalItem.getDisplayName() + " on this craft!");
             return;
         }
         playersInQue.add(player);
-        new LoadTask(craftManager.getCraftByPlayer(player),stock,finalItem ).runTaskTimer(this,delay,delay);
+        new LoadTask(craftManager.getCraftByPlayer(player),finalItem ).runTaskTimer(this,delay,delay);
         new ProcessingTask(player, finalItem,size).runTaskTimer(this,0,20);
         player.sendMessage(SUCCESS_TAG + "Started loading cargo");
     }
