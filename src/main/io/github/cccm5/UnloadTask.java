@@ -13,7 +13,7 @@ public class UnloadTask extends CargoTask
     }
 
     public void execute(){
-        List<Inventory> invs = Utils.getInventories(craft, item.getMainItem(), Material.CHEST, Material.TRAPPED_CHEST);
+        List<Inventory> invs = Utils.getInventories(craft, item.getMainItem(), Material.CHEST, Material.TRAPPED_CHEST, Material.BARREL);
         
         Inventory inv = invs.get(0);
         int count = 0;

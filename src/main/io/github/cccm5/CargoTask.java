@@ -57,7 +57,7 @@ public abstract class CargoTask extends BukkitRunnable
             return;
         }
         if(CargoMain.isDebug())
-            CargoMain.logger.info("Running execute method for CargoTask with address " + this + ". Pilot: " + originalPilot.getName() + " CraftSize: " + originalLocations.size() + " CraftType: " + craft.getType() + " StockItem: " + item.getDisplayName());
+            CargoMain.logger.info("Running execute method for CargoTask with address " + this + ". Pilot: " + originalPilot.getName() + " CraftSize: " + originalLocations.size() + " CraftType: " + craft.getType().getCraftName() + " StockItem: " + (item.getDisplayName().length() > 0 ? item.getDisplayName() : item.getMainItem().getType().name().toLowerCase()));
         execute();
     }
 

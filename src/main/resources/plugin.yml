@@ -1,7 +1,7 @@
 name: Cargo
 main: io.github.cccm5.CargoMain
 version: ${project.version}
-api-version: 1.13
+api-version: 1.14
 depend: [Movecraft, Vault, Citizens, dtlTraders]
 commands:
     load:

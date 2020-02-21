@@ -173,14 +173,18 @@ public class Utils
                 {
                     Inventory inv = ((InventoryHolder)loc.getBlock().getState()).getInventory();
                     if(item==null){
-                        invs.add(inv);
-                        break;
+                        if (!invs.contains(inv)) {
+                            invs.add(inv);
+                            break;
+                        }
                     }
                     for(ItemStack i : inv)
                         if(i==null || i.getType() == Material.AIR || (i.isSimilar(item) && i.getAmount() < item.getMaxStackSize() )){
-                            invs.add(inv);
-                            foundStack=true;
-                            break;
+                            if (!invs.contains(inv)) {
+                                invs.add(inv);
+                                foundStack = true;
+                                break;
+                            }
                         }
                     if(foundStack)
                         break;

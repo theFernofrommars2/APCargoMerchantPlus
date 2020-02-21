@@ -163,7 +163,7 @@ public class CargoMain extends JavaPlugin implements Listener {
     @EventHandler
     public void onSignClick(PlayerInteractEvent e) {
         if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            if (e.getClickedBlock().getType() == Material.WALL_SIGN || e.getClickedBlock().getType() == (isPre1_13 ? SIGN_POST : Material.SIGN)) {
+            if (e.getClickedBlock().getState() instanceof Sign) {
                 Sign sign = (Sign) e.getClickedBlock().getState();
                 if (sign.getLine(0).equals(ChatColor.DARK_AQUA + "[UnLoad]")) {
                     unload(e.getPlayer());
@@ -178,7 +178,7 @@ public class CargoMain extends JavaPlugin implements Listener {
 
     @EventHandler
     public void onSignPlace(SignChangeEvent e){
-        if(e.getBlock().getType().equals(Material.SIGN) || e.getBlock().getType().equals(Material.WALL_SIGN) || e.getBlock().getType().equals(SIGN_POST)){
+        if(e.getBlock().getState() instanceof Sign){
             if(ChatColor.stripColor(e.getLine(0)).equalsIgnoreCase("[Load]") || ChatColor.stripColor(e.getLine(0)).equalsIgnoreCase("[UnLoad]")){
                 e.setLine(0,ChatColor.DARK_AQUA + (ChatColor.stripColor(e.getLine(0))).replaceAll("u","U").replaceAll("l","L"));
             }
@@ -262,9 +262,11 @@ public class CargoMain extends JavaPlugin implements Listener {
             finalItem = null;
             for (TradeGUIPage page : tradeGUI.getPages()) {
                 if (page == null) continue;
-                for (AGUIItem tempItem : page.getItems(true)) {
+                for (AGUIItem tempItem : page.getItems("sell")) {
                     if (tempItem == null) continue;
                     if (tempItem.getMainItem().isSimilar(compareItem)) {
+                        if (tempItem.getMainItem().getAmount() > 1)
+                            continue;
                         finalItem = (TradableGUIItem) tempItem;
                         break;
                     }
@@ -277,9 +279,10 @@ public class CargoMain extends JavaPlugin implements Listener {
             }
         }
         assert finalItem!=null;
+        String itemName = finalItem.getMainItem().getItemMeta().getDisplayName().length() > 0 ? finalItem.getMainItem().getItemMeta().getDisplayName() : finalItem.getMainItem().getType().name().toLowerCase();
         int size = Utils.getInventories(playerCraft, finalItem.getMainItem(), Material.CHEST, Material.TRAPPED_CHEST).size();
         if(size <=0 ){
-            player.sendMessage(CargoMain.ERROR_TAG + "You have no " + finalItem.getDisplayName() + " on this craft!");
+            player.sendMessage(CargoMain.ERROR_TAG + "You have no " + itemName + " on this craft!");
             return;
         }
         player.sendMessage(SUCCESS_TAG + "Started unloading cargo");
@@ -336,9 +339,11 @@ public class CargoMain extends JavaPlugin implements Listener {
             ItemStack compareItem = player.getInventory().getItemInMainHand().clone();
             for (TradeGUIPage page : tradeGUI.getPages()) {
                 if (page == null) continue;
-                for (AGUIItem tempItem : page.getItems(false)) {
+                for (AGUIItem tempItem : page.getItems("buy")) {
                     if (tempItem == null) continue;
                     if (tempItem.getMainItem().isSimilar(compareItem)) {
+                        if (tempItem.getMainItem().getAmount() > 1)
+                            continue;
                         finalItem = (TradableGUIItem) tempItem;
                         break;
                     }
@@ -352,14 +357,15 @@ public class CargoMain extends JavaPlugin implements Listener {
             }
         }
         assert finalItem != null;
+        String itemName = finalItem.getMainItem().getItemMeta().getDisplayName().length() > 0 ? finalItem.getMainItem().getItemMeta().getDisplayName() : finalItem.getMainItem().getType().name().toLowerCase();
         if(!economy.has(player,finalItem.getTradePrice()*(1+loadTax))){
-            player.sendMessage(ERROR_TAG + "You don't have enough money to buy any " + finalItem.getMainItem().getItemMeta().getDisplayName() + "!");
+            player.sendMessage(ERROR_TAG + "You don't have enough money to buy any " + itemName + "!");
             return;
         }
 
         int size = Utils.getInventoriesWithSpace(playerCraft, finalItem.getMainItem(), Material.CHEST, Material.TRAPPED_CHEST).size();
         if(size <=0 ){
-            player.sendMessage(CargoMain.ERROR_TAG + "You don't have any space for " + finalItem.getMainItem().getItemMeta().getDisplayName() + " on this craft!");
+            player.sendMessage(CargoMain.ERROR_TAG + "You don't have any space for " + itemName + " on this craft!");
             return;
         }
         playersInQue.add(player);
