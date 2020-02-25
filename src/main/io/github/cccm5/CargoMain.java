@@ -50,6 +50,10 @@ public class CargoMain extends JavaPlugin implements Listener {
     private static boolean debug;
     private double scanRange;
 
+    public static boolean isIsPre1_13() {
+        return isPre1_13;
+    }
+
     public void onEnable() {
         logger = this.getLogger();
         this.getServer().getPluginManager().registerEvents(this, this);
@@ -279,7 +283,7 @@ public class CargoMain extends JavaPlugin implements Listener {
             }
         }
         assert finalItem!=null;
-        String itemName = finalItem.getMainItem().getItemMeta().getDisplayName().length() > 0 ? finalItem.getMainItem().getItemMeta().getDisplayName() : finalItem.getMainItem().getType().name().toLowerCase();
+        String itemName = finalItem.getMainItem().getItemMeta().getDisplayName() != null && finalItem.getMainItem().getItemMeta().getDisplayName().length() > 0 ? finalItem.getMainItem().getItemMeta().getDisplayName() : finalItem.getMainItem().getType().name().toLowerCase();
         int size = Utils.getInventories(playerCraft, finalItem.getMainItem(), Material.CHEST, Material.TRAPPED_CHEST).size();
         if(size <=0 ){
             player.sendMessage(CargoMain.ERROR_TAG + "You have no " + itemName + " on this craft!");
@@ -357,7 +361,7 @@ public class CargoMain extends JavaPlugin implements Listener {
             }
         }
         assert finalItem != null;
-        String itemName = finalItem.getMainItem().getItemMeta().getDisplayName().length() > 0 ? finalItem.getMainItem().getItemMeta().getDisplayName() : finalItem.getMainItem().getType().name().toLowerCase();
+        String itemName = finalItem.getMainItem().getItemMeta().getDisplayName() != null && finalItem.getMainItem().getItemMeta().getDisplayName().length() > 0 ? finalItem.getMainItem().getItemMeta().getDisplayName() : finalItem.getMainItem().getType().name().toLowerCase();
         if(!economy.has(player,finalItem.getTradePrice()*(1+loadTax))){
             player.sendMessage(ERROR_TAG + "You don't have enough money to buy any " + itemName + "!");
             return;

@@ -13,8 +13,10 @@ public class UnloadTask extends CargoTask
     }
 
     public void execute(){
-        List<Inventory> invs = Utils.getInventories(craft, item.getMainItem(), Material.CHEST, Material.TRAPPED_CHEST, Material.BARREL);
-        
+        List<Inventory> invs = Utils.getInventories(craft, item.getMainItem(), Material.CHEST, Material.TRAPPED_CHEST);
+        if (!CargoMain.isIsPre1_13()) {
+            invs.addAll(Utils.getInventoriesWithSpace(craft, item.getMainItem(), Material.BARREL));
+        }
         Inventory inv = invs.get(0);
         int count = 0;
         for(int i = 0; i<inv.getSize();i++){

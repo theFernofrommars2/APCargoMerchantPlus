@@ -35,7 +35,7 @@ public class ProcessingTask extends BukkitRunnable implements Listener
         this.remainingTime = CargoMain.getDelay()/20;
         this.remainingChests = remainingChests;
         board = Bukkit.getScoreboardManager().getNewScoreboard();
-        itemDisplayName = item.getMainItem().getItemMeta().getDisplayName().length() > 0  ? item.getMainItem().getItemMeta().getDisplayName() : item.getMainItem().getType().name().toLowerCase();
+        itemDisplayName = item.getMainItem().getItemMeta().getDisplayName() != null && item.getMainItem().getItemMeta().getDisplayName().length() > 0  ? item.getMainItem().getItemMeta().getDisplayName() : item.getMainItem().getType().name().toLowerCase();
         objective = itemDisplayName.length() <=14 ? board.registerNewObjective(ChatColor.DARK_AQUA + itemDisplayName, "dummy") : board.registerNewObjective(ChatColor.DARK_AQUA + "Cargo", "dummy","Cargo");
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
         player.setScoreboard(board);
