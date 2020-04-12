@@ -1,16 +1,16 @@
 package io.github.cccm5;
 
+import com.degitise.minevid.dtlTraders.Main;
+import com.degitise.minevid.dtlTraders.guis.AGUI;
+import com.degitise.minevid.dtlTraders.guis.gui.TradeGUI;
+import com.degitise.minevid.dtlTraders.guis.gui.TradeGUIPage;
+import com.degitise.minevid.dtlTraders.guis.items.AGUIItem;
+import com.degitise.minevid.dtlTraders.guis.items.TradableGUIItem;
+import com.degitise.minevid.dtlTraders.utils.citizens.TraderTrait;
 import net.citizensnpcs.api.npc.NPC;
 import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.craft.CraftManager;
 import net.countercraft.movecraft.MovecraftLocation;
-import nl.thewgbbroz.dtltraders.Main;
-import nl.thewgbbroz.dtltraders.guis.AGUI;
-import nl.thewgbbroz.dtltraders.guis.tradegui.TradeGUI;
-import nl.thewgbbroz.dtltraders.guis.tradegui.TradeGUIPage;
-import nl.thewgbbroz.dtltraders.guis.tradegui.items.AGUIItem;
-import nl.thewgbbroz.dtltraders.guis.tradegui.items.TradableGUIItem;
-import nl.thewgbbroz.dtltraders.citizens.TraderTrait;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;

@@ -1,7 +1,6 @@
 package io.github.cccm5;
 
-
-import nl.thewgbbroz.dtltraders.guis.tradegui.items.TradableGUIItem;
+import com.degitise.minevid.dtlTraders.guis.items.TradableGUIItem;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;

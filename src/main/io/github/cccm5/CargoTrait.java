@@ -1,5 +1,6 @@
 package io.github.cccm5;
 
+import com.degitise.minevid.dtlTraders.utils.citizens.TraderTrait;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.trait.TraitName;
 /**
@@ -16,7 +17,7 @@ public class CargoTrait extends Trait
 
     @Override
     public void onAttach(){
-        if(!this.npc.hasTrait(nl.thewgbbroz.dtltraders.citizens.TraderTrait.class))
+        if(!this.npc.hasTrait(TraderTrait.class))
             this.npc.removeTrait(CargoTrait.class);
     }
 

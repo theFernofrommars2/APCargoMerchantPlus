@@ -1,10 +1,7 @@
 package io.github.cccm5;
 
-import java.util.Arrays;
-import java.util.Collections;
-
+import com.degitise.minevid.dtlTraders.guis.items.TradableGUIItem;
 import net.countercraft.movecraft.utils.HashHitBox;
-import nl.thewgbbroz.dtltraders.guis.tradegui.items.TradableGUIItem;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
