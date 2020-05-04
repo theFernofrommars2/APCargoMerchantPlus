@@ -1,7 +1,7 @@
 package io.github.cccm5;
 
 import com.degitise.minevid.dtlTraders.guis.items.TradableGUIItem;
-import net.countercraft.movecraft.utils.HashHitBox;
+import net.countercraft.movecraft.utils.BitmapHitBox;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -11,7 +11,7 @@ import net.countercraft.movecraft.craft.CraftManager;
 public abstract class CargoTask extends BukkitRunnable 
 {
     protected Craft craft;
-    protected final HashHitBox originalLocations;
+    protected final BitmapHitBox originalLocations;
     protected final Player originalPilot;
     protected TradableGUIItem item;
     //protected Stock stock;
