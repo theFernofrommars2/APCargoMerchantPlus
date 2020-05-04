@@ -56,13 +56,13 @@
         <dependency>
 			<groupId>net.countercraft.movecraft</groupId>
 			<artifactId>Movecraft</artifactId>
-			<version>3.0</version>
+			<version>7.0.0</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/libs/movecraft.jar</systemPath>
+            <systemPath>${project.basedir}/libs/Movecraft.jar</systemPath>
 		</dependency>
         <!--DTL Traders-->
         <dependency>
-			<groupId>nl.thewgbbroz</groupId>
+			<groupId>com.degitise.minevid</groupId>
 			<artifactId>dtlTraders</artifactId>
 			<version>LATEST</version>
             <scope>system</scope>

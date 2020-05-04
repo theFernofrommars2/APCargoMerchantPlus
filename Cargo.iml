@@ -26,7 +26,7 @@
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.yaml:snakeyaml:1.23" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.bukkit:bukkit:1.14-R0.1-SNAPSHOT" level="project" />
     <orderEntry type="module-library">
-      <library name="Maven: net.countercraft.movecraft:Movecraft:3.0">
+      <library name="Maven: net.countercraft.movecraft:Movecraft:7.0.0">
         <CLASSES>
           <root url="jar://$MODULE_DIR$/libs/Movecraft.jar!/" />
         </CLASSES>
@@ -35,7 +35,7 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="Maven: nl.thewgbbroz:dtlTraders:LATEST">
+      <library name="Maven: com.degitise.minevid:dtlTraders:LATEST">
         <CLASSES>
           <root url="jar://$MODULE_DIR$/libs/dtlTraders.jar!/" />
         </CLASSES>

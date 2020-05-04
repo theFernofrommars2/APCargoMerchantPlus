@@ -7,6 +7,7 @@ import com.degitise.minevid.dtlTraders.guis.gui.TradeGUIPage;
 import com.degitise.minevid.dtlTraders.guis.items.AGUIItem;
 import com.degitise.minevid.dtlTraders.guis.items.TradableGUIItem;
 import com.degitise.minevid.dtlTraders.utils.citizens.TraderTrait;
+import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.craft.CraftManager;
@@ -101,8 +102,8 @@ public class CargoMain extends JavaPlugin implements Listener {
             getServer().getPluginManager().disablePlugin(this);	
             return;
         }
-        if(net.citizensnpcs.api.CitizensAPI.getTraitFactory().getTrait(CargoTrait.class)==null)
-            net.citizensnpcs.api.CitizensAPI.getTraitFactory().registerTrait(net.citizensnpcs.api.trait.TraitInfo.create(CargoTrait.class));
+        if(CitizensAPI.getTraitFactory().getTrait(CargoTrait.class)==null)
+            CitizensAPI.getTraitFactory().registerTrait(net.citizensnpcs.api.trait.TraitInfo.create(CargoTrait.class));
         //************************
         //*      Load Vault      *
         //************************
@@ -166,27 +167,32 @@ public class CargoMain extends JavaPlugin implements Listener {
 
     @EventHandler
     public void onSignClick(PlayerInteractEvent e) {
-        if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            if (e.getClickedBlock().getState() instanceof Sign) {
-                Sign sign = (Sign) e.getClickedBlock().getState();
-                if (sign.getLine(0).equals(ChatColor.DARK_AQUA + "[UnLoad]")) {
-                    unload(e.getPlayer());
-                    return;
-                }
-                if (sign.getLine(0).equals(ChatColor.DARK_AQUA + "[Load]")) {
-                    load(e.getPlayer());
-                }
-            }
+        if (e.getAction() != Action.RIGHT_CLICK_BLOCK) {
+            return;
         }
+        if (!e.getClickedBlock().getType().name().equals("SIGN_POST") && !e.getClickedBlock().getType().name().endsWith("SIGN") && !e.getClickedBlock().getType().name().endsWith("WALL_SIGN")) {
+            return;
+        }
+        Sign sign = (Sign) e.getClickedBlock().getState();
+        if (sign.getLine(0).equals(ChatColor.DARK_AQUA + "[UnLoad]")) {
+            unload(e.getPlayer());
+            return;
+        }
+        if (sign.getLine(0).equals(ChatColor.DARK_AQUA + "[Load]")) {
+            load(e.getPlayer());
+        }
+
     }
 
     @EventHandler
     public void onSignPlace(SignChangeEvent e){
-        if(e.getBlock().getState() instanceof Sign){
-            if(ChatColor.stripColor(e.getLine(0)).equalsIgnoreCase("[Load]") || ChatColor.stripColor(e.getLine(0)).equalsIgnoreCase("[UnLoad]")){
-                e.setLine(0,ChatColor.DARK_AQUA + (ChatColor.stripColor(e.getLine(0))).replaceAll("u","U").replaceAll("l","L"));
-            }
+        if(!e.getBlock().getType().name().equals("SIGN_POST") && !e.getBlock().getType().name().endsWith("SIGN") && !e.getBlock().getType().name().endsWith("WALL_SIGN")){
+            return;
         }
+        if(ChatColor.stripColor(e.getLine(0)).equalsIgnoreCase("[Load]") || ChatColor.stripColor(e.getLine(0)).equalsIgnoreCase("[UnLoad]")){
+            e.setLine(0,ChatColor.DARK_AQUA + (ChatColor.stripColor(e.getLine(0))).replaceAll("u","U").replaceAll("l","L"));
+        }
+
     }
 
     public static boolean isDebug(){
@@ -267,7 +273,7 @@ public class CargoMain extends JavaPlugin implements Listener {
             for (TradeGUIPage page : tradeGUI.getPages()) {
                 if (page == null) continue;
                 for (AGUIItem tempItem : page.getItems("sell")) {
-                    if (tempItem == null) continue;
+                    if (!(tempItem instanceof TradableGUIItem)) continue;
                     if (tempItem.getMainItem().isSimilar(compareItem)) {
                         if (tempItem.getMainItem().getAmount() > 1)
                             continue;
