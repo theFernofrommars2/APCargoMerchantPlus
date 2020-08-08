@@ -26,6 +26,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -155,10 +156,7 @@ public class CargoMain extends JavaPlugin implements Listener {
             sender.sendMessage(ChatColor.DARK_AQUA + "Transfer Delay: " + ChatColor.WHITE + delay + " ticks");
             sender.sendMessage(ChatColor.DARK_AQUA + "Unload Tax: " + ChatColor.WHITE + String.format("%.2f",100*unloadTax) + "%");
             sender.sendMessage(ChatColor.DARK_AQUA + "Load Tax: " + ChatColor.WHITE + String.format("%.2f",100*loadTax) + "%");
-            if(cardinalDistance)
-                sender.sendMessage(ChatColor.DARK_AQUA + "Distance Type: " + ChatColor.WHITE + "Cardinal");
-            else
-                sender.sendMessage(ChatColor.DARK_AQUA + "Distance Type: " + ChatColor.WHITE + "Direct");
+            sender.sendMessage(ChatColor.DARK_AQUA + "Distance Type: " + ChatColor.WHITE + (cardinalDistance ? "Cardinal" : "Direct"));
             return true;
         }
         return false;
@@ -350,11 +348,13 @@ public class CargoMain extends JavaPlugin implements Listener {
             for (TradeGUIPage page : tradeGUI.getPages()) {
                 if (page == null) continue;
                 for (AGUIItem tempItem : page.getItems("buy")) {
-                    if (tempItem == null) continue;
-                    if (tempItem.getMainItem().isSimilar(compareItem)) {
+                    if (!(tempItem instanceof TradableGUIItem))
+                        continue;
+                    TradableGUIItem tradeItem = (TradableGUIItem) tempItem;
+                    if (tradeItem.getMainItem().isSimilar(compareItem)) {
                         if (tempItem.getMainItem().getAmount() > 1)
                             continue;
-                        finalItem = (TradableGUIItem) tempItem;
+                        finalItem = tradeItem;
                         break;
                     }
                 }
@@ -367,7 +367,8 @@ public class CargoMain extends JavaPlugin implements Listener {
             }
         }
         assert finalItem != null;
-        String itemName = finalItem.getMainItem().getItemMeta().getDisplayName() != null && finalItem.getMainItem().getItemMeta().getDisplayName().length() > 0 ? finalItem.getMainItem().getItemMeta().getDisplayName() : finalItem.getMainItem().getType().name().toLowerCase();
+        final ItemMeta meta = finalItem.getMainItem().getItemMeta();
+        String itemName = meta.getDisplayName() != null && meta.getDisplayName().length() > 0 ? meta.getDisplayName() : finalItem.getMainItem().getType().name().toLowerCase();
         if(!economy.has(player,finalItem.getTradePrice()*(1+loadTax))){
             player.sendMessage(ERROR_TAG + "You don't have enough money to buy any " + itemName + "!");
             return;
