@@ -1,6 +1,6 @@
 package io.github.cccm5;
 
-import net.dandielo.citizens.traders_v3.traders.stock.StockItem;
+import com.degitise.minevid.dtlTraders.guis.items.TradableGUIItem;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -20,10 +20,11 @@ public class ProcessingTask extends BukkitRunnable implements Listener
     private static final int DELAY_BETWEEN_DISPLAY = 1;
     private int remainingTime,remainingChests;
     private final Player player;
-    private final StockItem item;
+    private final TradableGUIItem item;
+    private final String itemDisplayName;
     private Scoreboard board;
     private Objective objective;
-    public ProcessingTask(Player player, StockItem item, int remainingChests){//, int remainingChests){
+    public ProcessingTask(Player player, TradableGUIItem item, int remainingChests){//, int remainingChests){
         if (item == null) 
             throw new IllegalArgumentException("item must not be null");
         if (player == null) 
@@ -33,7 +34,8 @@ public class ProcessingTask extends BukkitRunnable implements Listener
         this.remainingTime = CargoMain.getDelay()/20;
         this.remainingChests = remainingChests;
         board = Bukkit.getScoreboardManager().getNewScoreboard();
-        objective = item.getName().length()<=14 ? board.registerNewObjective(ChatColor.DARK_AQUA + item.getName(), "dummy") : board.registerNewObjective(ChatColor.DARK_AQUA + "Cargo", "dummy");
+        itemDisplayName = item.getMainItem().getItemMeta().getDisplayName() != null && item.getMainItem().getItemMeta().getDisplayName().length() > 0  ? item.getMainItem().getItemMeta().getDisplayName() : item.getMainItem().getType().name().toLowerCase();
+        objective = itemDisplayName.length() <=14 ? board.registerNewObjective(ChatColor.DARK_AQUA + itemDisplayName, "dummy") : board.registerNewObjective(ChatColor.DARK_AQUA + "Cargo", "dummy","Cargo");
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
         player.setScoreboard(board);
     }

@@ -4,7 +4,8 @@ import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.npc.NPCRegistry;
 import net.citizensnpcs.api.trait.Trait;
 import net.countercraft.movecraft.craft.Craft;
-import net.countercraft.movecraft.utils.MovecraftLocation;
+import net.countercraft.movecraft.MovecraftLocation;
+import net.countercraft.movecraft.utils.HitBox;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -36,7 +37,7 @@ public class Utils
      * @param world the world of the location
      * @return the converted location
      */
-    public static ArrayList<Location> movecraftLocationToBukkitLocation(List<MovecraftLocation> movecraftLocations, World world){
+    public static ArrayList<Location> movecraftLocationToBukkitLocation(HitBox movecraftLocations, World world){
         ArrayList<Location> locations = new ArrayList<Location>();
         for(MovecraftLocation movecraftLoc : movecraftLocations){
             locations.add(movecraftLocationToBukkitLocation(movecraftLoc,world));
@@ -89,7 +90,7 @@ public class Utils
         if(craft == null)
             throw new IllegalArgumentException("craft must not be null");
 
-        for(Location loc : movecraftLocationToBukkitLocation(craft.getBlockList(),craft.getW()))
+        for(Location loc : movecraftLocationToBukkitLocation(craft.getHitBox(),craft.getW()))
             for(Material m : lookup)
                 if(loc.getBlock().getType() == m)
                 {
@@ -127,7 +128,7 @@ public class Utils
         if(item.getType() == Material.AIR)
             throw new IllegalArgumentException("item must not have type Material.AIR");
 
-        for(Location loc : movecraftLocationToBukkitLocation(craft.getBlockList(),craft.getW()))
+        for(Location loc : movecraftLocationToBukkitLocation(craft.getHitBox(),craft.getW()))
             for(Material m : lookup)
                 if(loc.getBlock().getType() == m)
                 {
@@ -165,21 +166,25 @@ public class Utils
         if(item.getType() == Material.AIR)
             throw new IllegalArgumentException("item must not have type Material.AIR");
         ArrayList<Inventory> invs = new ArrayList<Inventory>();
-        for(Location loc : movecraftLocationToBukkitLocation(craft.getBlockList(),craft.getW()))
+        for(Location loc : movecraftLocationToBukkitLocation(craft.getHitBox(),craft.getW()))
             for(Material m : lookup){
                 boolean foundStack=false;
                 if(loc.getBlock().getType() == m)
                 {
                     Inventory inv = ((InventoryHolder)loc.getBlock().getState()).getInventory();
                     if(item==null){
-                        invs.add(inv);
-                        break;
+                        if (!invs.contains(inv)) {
+                            invs.add(inv);
+                            break;
+                        }
                     }
                     for(ItemStack i : inv)
                         if(i==null || i.getType() == Material.AIR || (i.isSimilar(item) && i.getAmount() < item.getMaxStackSize() )){
-                            invs.add(inv);
-                            foundStack=true;
-                            break;
+                            if (!invs.contains(inv)) {
+                                invs.add(inv);
+                                foundStack = true;
+                                break;
+                            }
                         }
                     if(foundStack)
                         break;
@@ -211,7 +216,7 @@ public class Utils
         if(craft == null)
             throw new IllegalArgumentException("craft must not be null");
         ArrayList<Inventory> invs = new ArrayList<Inventory>();	
-        for(Location loc : movecraftLocationToBukkitLocation(craft.getBlockList(),craft.getW()))
+        for(Location loc : movecraftLocationToBukkitLocation(craft.getHitBox(),craft.getW()))
             for(Material m : lookup){
                 boolean foundStack=false;
                 if(loc.getBlock().getType() == m)

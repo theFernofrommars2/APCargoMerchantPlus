@@ -1,38 +1,32 @@
 package io.github.cccm5;
 
-import java.util.Arrays;
-
+import com.degitise.minevid.dtlTraders.guis.items.TradableGUIItem;
+import net.countercraft.movecraft.utils.BitmapHitBox;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.craft.CraftManager;
-import net.countercraft.movecraft.utils.MovecraftLocation;
 
-import net.dandielo.citizens.traders_v3.traders.stock.Stock;
-import net.dandielo.citizens.traders_v3.traders.stock.StockItem;
 public abstract class CargoTask extends BukkitRunnable 
 {
     protected Craft craft;
-    protected final MovecraftLocation[] originalLocations;
+    protected final BitmapHitBox originalLocations;
     protected final Player originalPilot;
-    protected Stock stock;
-    protected final StockItem item;
-    protected CargoTask(Craft craft, Stock stock, StockItem item){
+    protected TradableGUIItem item;
+    //protected Stock stock;
+    //protected final StockItem item;
+    protected CargoTask(Craft craft, TradableGUIItem guiItem){
         if (craft == null) {
             throw new IllegalArgumentException("craft must not be null");
         }
         else
             this.craft = craft;
-        if (stock == null) 
-            throw new IllegalArgumentException("stock must not be null");
-        else
-            this.stock = stock;
-        if (item == null) 
+        if (guiItem == null)
             throw new IllegalArgumentException("item must not be null");
         else
-            this.item = item;
-        this.originalLocations = craft.getBlockList();
+            this.item = guiItem;
+        this.originalLocations = craft.getHitBox();
         this.originalPilot = CraftManager.getInstance().getPlayerFromCraft(craft);
     }
 
@@ -53,14 +47,14 @@ public abstract class CargoTask extends BukkitRunnable
             return;
         }
 
-        if(!Arrays.deepEquals(craft.getBlockList(), originalLocations)) { 
+        if(craft.getHitBox() != originalLocations) {
             originalPilot.sendMessage("Blocks moved/changed!");
             CargoMain.getQue().remove(originalPilot);
             this.cancel();
             return;
         }
         if(CargoMain.isDebug())
-            CargoMain.logger.info("Running execute method for CargoTask with address " + this + ". Pilot: " + originalPilot.getName() + " CraftSize: " + originalLocations.length + " CraftType: " + craft.getType() + " StockItem: " + item.getName());
+            CargoMain.logger.info("Running execute method for CargoTask with address " + this + ". Pilot: " + originalPilot.getName() + " CraftSize: " + originalLocations.size() + " CraftType: " + craft.getType().getCraftName() + " StockItem: " + (item.getDisplayName().length() > 0 ? item.getDisplayName() : item.getMainItem().getType().name().toLowerCase()));
         execute();
     }
 
