@@ -5,6 +5,7 @@
 	<artifactId>Cargo</artifactId>
 	<version>2.a.0</version>
 	<build>
+		<finalName>Cargo</finalName>
 		<sourceDirectory>src/main</sourceDirectory>
 		<resources>
 			<resource>
