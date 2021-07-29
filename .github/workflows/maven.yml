@@ -150,10 +150,10 @@ jobs:
     needs: [pillage_1_14_4, bees_1_15_2, nether_1_16_5, goats_1_17]
 
     steps:
-      - name: Checkout Movecraft-Repair
+      - name: Checkout APCargoMerchant
         uses: actions/checkout@v2
         with:
-          path: Movecraft-Repair
+          path: APCargoMerchant
           ref: main
       - name: Checkout Movecraft
         uses: actions/checkout@v2
