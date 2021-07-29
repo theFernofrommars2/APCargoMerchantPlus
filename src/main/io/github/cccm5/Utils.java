@@ -5,7 +5,7 @@ import net.citizensnpcs.api.npc.NPCRegistry;
 import net.citizensnpcs.api.trait.Trait;
 import net.countercraft.movecraft.craft.Craft;
 import net.countercraft.movecraft.MovecraftLocation;
-import net.countercraft.movecraft.utils.HitBox;
+import net.countercraft.movecraft.util.hitboxes.HitBox;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -15,9 +15,11 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
+
+
 public class Utils
 {
-    private static final Material[] INVENTORY_MATERIALS = new Material[]{Material.CHEST,Material.TRAPPED_CHEST, Material.FURNACE, Material.HOPPER,Material.DROPPER,Material.DISPENSER, Material.BREWING_STAND};
+    private static final Material[] INVENTORY_MATERIALS = new Material[]{Material.CHEST, Material.TRAPPED_CHEST, Material.FURNACE, Material.HOPPER, Material.DROPPER, Material.DISPENSER, Material.BREWING_STAND, Material.BARREL};
 
     /**
      * Converts a movecraftLocation Object to a bukkit Location Object
@@ -38,22 +40,7 @@ public class Utils
      * @return the converted location
      */
     public static ArrayList<Location> movecraftLocationToBukkitLocation(HitBox movecraftLocations, World world){
-        ArrayList<Location> locations = new ArrayList<Location>();
-        for(MovecraftLocation movecraftLoc : movecraftLocations){
-            locations.add(movecraftLocationToBukkitLocation(movecraftLoc,world));
-        }
-        return locations;
-    }
-
-    /**
-     * Converts a list of movecraftLocation Object to a bukkit Location Object
-     * 
-     * @param movecraftLocations the movecraftLocations to be converted
-     * @param world the world of the location
-     * @return the converted location
-     */
-    public static ArrayList<Location> movecraftLocationToBukkitLocation(MovecraftLocation[] movecraftLocations, World world){
-        ArrayList<Location> locations = new ArrayList<Location>();
+        ArrayList<Location> locations = new ArrayList<>();
         for(MovecraftLocation movecraftLoc : movecraftLocations){
             locations.add(movecraftLocationToBukkitLocation(movecraftLoc,world));
         }
@@ -61,85 +48,12 @@ public class Utils
     }
 
     public static ArrayList<NPC> getNPCsWithTrait(Class<? extends Trait> c){
-        ArrayList<NPC> npcs = new ArrayList<NPC>();
+        ArrayList<NPC> npcs = new ArrayList<>();
         for(NPCRegistry registry : net.citizensnpcs.api.CitizensAPI.getNPCRegistries())
             for(NPC npc : registry)
                 if(npc.hasTrait(c))
                     npcs.add(npc);
         return npcs;
-    }
-
-    /**
-     * Gets the first inventory of a lookup material type on a craft holding a specific item, returns null if none found
-     * an input of null for item searches without checking inventory contents
-     * an input of an ItemStack with type set to Material.AIR for searches for empty space in an inventory
-     * 
-     * @param craft the craft to scan
-     * @param item the item to look for during the scan
-     * @param lookup the materials to compare against while scanning
-     * @return the first inventory matching a lookup material on the craft
-     */
-    public static Inventory firstInventory(Craft craft, ItemStack item, Material... lookup){
-        boolean test=false;
-        for(Material m : lookup){
-            for(Material compare : INVENTORY_MATERIALS)
-                if(compare == m) test = true;
-            if(!test)
-                throw new IllegalArgumentException(m + " is not an inventory type");
-        }
-        if(craft == null)
-            throw new IllegalArgumentException("craft must not be null");
-
-        for(Location loc : movecraftLocationToBukkitLocation(craft.getHitBox(),craft.getW()))
-            for(Material m : lookup)
-                if(loc.getBlock().getType() == m)
-                {
-                    Inventory inv = ((InventoryHolder)loc.getBlock().getState()).getInventory();
-                    if(item==null)
-                        return inv;
-                    for(ItemStack i : inv)
-                        if((item.getType()==Material.AIR  && (i==null || i.getType()==Material.AIR)) || (i!=null && i.isSimilar(item)))
-                            return inv;
-                }
-        return null;
-    }
-
-    /**
-     * Gets the first inventory of a lookup material type on a craft holding a specific item, returns null if none found
-     * an input of null for item searches without checking inventory contents
-     * 
-     * @param craft the craft to scan
-     * @param item the item to look for during the scan
-     * @param lookup the materials to compare against while scanning
-     * @return the first inventory matching a lookup material on the craft
-     */
-    public static Inventory firstInventoryWithSpace(Craft craft, ItemStack item, Material... lookup){
-        boolean test=false;
-        for(Material m : lookup){
-            for(Material compare : INVENTORY_MATERIALS)
-                if(compare == m){
-                    test=true;
-                }
-            if(!test)
-                throw new IllegalArgumentException(m + " is not an inventory type");
-        }
-        if(craft == null)
-            throw new IllegalArgumentException("craft must not be null");
-        if(item.getType() == Material.AIR)
-            throw new IllegalArgumentException("item must not have type Material.AIR");
-
-        for(Location loc : movecraftLocationToBukkitLocation(craft.getHitBox(),craft.getW()))
-            for(Material m : lookup)
-                if(loc.getBlock().getType() == m)
-                {
-                    Inventory inv = ((InventoryHolder)loc.getBlock().getState()).getInventory();
-                    if(item==null)
-                        return inv;
-                    for(ItemStack i : inv)
-                        if(i==null || i.getType() == Material.AIR || (i.isSimilar(item) && i.getAmount() < item.getMaxStackSize() ))
-                            return inv;
-                }
-        return null;
     }
 
     /**

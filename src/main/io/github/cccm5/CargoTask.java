@@ -1,7 +1,8 @@
 package io.github.cccm5;
 
 import com.degitise.minevid.dtlTraders.guis.items.TradableGUIItem;
-import net.countercraft.movecraft.utils.BitmapHitBox;
+import net.countercraft.movecraft.craft.PlayerCraft;
+import net.countercraft.movecraft.util.hitboxes.HitBox;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -10,8 +11,8 @@ import net.countercraft.movecraft.craft.CraftManager;
 
 public abstract class CargoTask extends BukkitRunnable 
 {
-    protected Craft craft;
-    protected final BitmapHitBox originalLocations;
+    protected PlayerCraft craft;
+    protected final HitBox originalLocations;
     protected final Player originalPilot;
     protected TradableGUIItem item;
     //protected Stock stock;
@@ -20,14 +21,17 @@ public abstract class CargoTask extends BukkitRunnable
         if (craft == null) {
             throw new IllegalArgumentException("craft must not be null");
         }
+        else if (!(craft instanceof PlayerCraft)) {
+            throw new IllegalArgumentException("craft must not be a player craft");
+        }
         else
-            this.craft = craft;
+            this.craft = (PlayerCraft) craft;
         if (guiItem == null)
             throw new IllegalArgumentException("item must not be null");
         else
             this.item = guiItem;
         this.originalLocations = craft.getHitBox();
-        this.originalPilot = CraftManager.getInstance().getPlayerFromCraft(craft);
+        this.originalPilot = this.craft.getPlayer();
     }
 
     @Override
@@ -40,7 +44,7 @@ public abstract class CargoTask extends BukkitRunnable
             return;
         }
 
-        if (CraftManager.getInstance().getPlayerFromCraft(craft)!=originalPilot ){
+        if (this.craft.getPlayer()!=originalPilot ){
             originalPilot.sendMessage("Pilots changed!");
             CargoMain.getQue().remove(originalPilot);
             this.cancel();
