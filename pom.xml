@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>cccm5.github.io</groupId>
 	<artifactId>Cargo</artifactId>
-	<version>2.a.0</version>
+	<version>2.0.0-a.1</version>
 	<build>
 		<finalName>Cargo</finalName>
 		<sourceDirectory>src/main</sourceDirectory>
@@ -25,8 +25,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.7.0</version>
 				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
+					<source>13</source>
+					<target>13</target>
 				</configuration>
 			</plugin>
 		</plugins>
@@ -41,8 +41,8 @@
 			<url>https://repo.citizensnpcs.co/</url>
 		</repository>
         <repository>
-            <id>vault-repo</id>
-            <url>https://nexus.hc.to/content/repositories/pub_releases</url>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
         </repository>
 		<repository>
 			<id>github</id>
@@ -68,16 +68,16 @@
 		<dependency>
 			<groupId>org.bukkit</groupId>
 			<artifactId>bukkit</artifactId>
-			<version>1.14-R0.1-SNAPSHOT</version>
+			<version>1.14.4-R0.1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
         <!--Movecraft-->
-		<dependency>
-			<groupId>net.countercraft</groupId>
-			<artifactId>movecraft</artifactId>
-			<version>LATEST</version>
-			<scope>provided</scope>
-		</dependency>
+        <dependency>
+            <groupId>net.countercraft</groupId>
+            <artifactId>movecraft</artifactId>
+            <version>LATEST</version>
+            <scope>provided</scope>
+        </dependency>
         <!--DTL Traders-->
         <dependency>
 			<groupId>com.degitise.minevid</groupId>
@@ -90,15 +90,21 @@
         <dependency>
             <groupId>net.citizensnpcs</groupId>
 			<artifactId>citizensapi</artifactId>
-			<version>2.0.24-SNAPSHOT</version>
+			<version>2.0.30-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
-        <!--Vault-->
+        <!--VaultAPI-->
         <dependency>
-            <groupId>net.milkbowl.vault</groupId>
+            <groupId>com.github.MilkBowl</groupId>
             <artifactId>VaultAPI</artifactId>
-            <version>1.6</version>
+            <version>1.7.1</version>
             <scope>provided</scope>
+        </dependency>
+        <!--Annotations-->
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations-java5</artifactId>
+            <version>23.1.0</version>
         </dependency>
 	</dependencies>
 </project>
