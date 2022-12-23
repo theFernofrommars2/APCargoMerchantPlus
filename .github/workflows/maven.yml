@@ -27,6 +27,8 @@ jobs:
       # Build APCargoMerchant
       - name: Build APCargoMerchant
         run: mvn -B package -T 1C --file APCargoMerchant/pom.xml
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Stage jar
         run: mkdir staging && cp APCargoMerchant/target/Cargo.jar staging
