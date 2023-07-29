@@ -339,21 +339,23 @@ public class CargoMain extends JavaPlugin implements Listener {
         String guiName;
         TradableGUIItem finalItem = null;
         for(NPC cargoMerchant : nearbyMerchants) {
-            if(finalItem!=null)
-                break;
             guiName = cargoMerchant.getTrait(TraderTrait.class).getGUIName();
             AGUI gui = dtlTradersPlugin.getGuiListService().getGUI(guiName);
             TradeGUI tradeGUI = (TradeGUI) gui;
             ItemStack compareItem = player.getInventory().getItemInMainHand().clone();
             for (TradeGUIPage page : tradeGUI.getPages()) {
-                if (page == null) continue;
+                if (page == null) 
+                    continue;
+
                 for (AGUIItem tempItem : page.getItems("buy")) {
                     if (!(tempItem instanceof TradableGUIItem))
                         continue;
+
                     TradableGUIItem tradeItem = (TradableGUIItem) tempItem;
                     if (tradeItem.getMainItem().isSimilar(compareItem)) {
                         if (tempItem.getMainItem().getAmount() > 1)
                             continue;
+
                         finalItem = tradeItem;
                         break;
                     }
@@ -361,12 +363,14 @@ public class CargoMain extends JavaPlugin implements Listener {
                 if (finalItem != null)
                     break;
             }
-            if (finalItem == null || finalItem.getTradePrice() == 0.0) {
-                player.sendMessage(ERROR_TAG + "You need to be holding a cargo item to do that!");
-                return;
-            }
+            if (finalItem != null)
+                break;
         }
-        assert finalItem != null;
+        if (finalItem == null || finalItem.getTradePrice() == 0.0) {
+            player.sendMessage(ERROR_TAG + "You need to be holding a cargo item to do that!");
+            return;
+        }
+
         final ItemMeta meta = finalItem.getMainItem().getItemMeta();
         String itemName = meta.getDisplayName() != null && meta.getDisplayName().length() > 0 ? meta.getDisplayName() : finalItem.getMainItem().getType().name().toLowerCase();
         if(!economy.has(player,finalItem.getTradePrice()*(1+loadTax))){
