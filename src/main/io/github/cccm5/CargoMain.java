@@ -25,6 +25,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
@@ -288,11 +289,17 @@ public class CargoMain extends JavaPlugin implements Listener {
         }
         assert finalItem!=null;
         String itemName = finalItem.getMainItem().getItemMeta().getDisplayName() != null && finalItem.getMainItem().getItemMeta().getDisplayName().length() > 0 ? finalItem.getMainItem().getItemMeta().getDisplayName() : finalItem.getMainItem().getType().name().toLowerCase();
-        int size = Utils.getInventories(playerCraft, finalItem.getMainItem(), Material.CHEST, Material.TRAPPED_CHEST).size();
+
+        List<Inventory> invs = Utils.getInventories(playerCraft, finalItem.getMainItem(), Material.CHEST, Material.TRAPPED_CHEST);
+        if (!CargoMain.isIsPre1_13()) {
+            invs.addAll(Utils.getInventoriesWithSpace(playerCraft, finalItem.getMainItem(), Material.BARREL));
+        }
+        int size = invs.size();
         if(size <=0 ){
             player.sendMessage(CargoMain.ERROR_TAG + "You have no " + itemName + " on this craft!");
             return;
         }
+
         player.sendMessage(SUCCESS_TAG + "Started unloading cargo");
         playersInQue.add(player);
         new UnloadTask(craftManager.getCraftByPlayer(player),finalItem ).runTaskTimer(this,delay,delay);
@@ -378,7 +385,11 @@ public class CargoMain extends JavaPlugin implements Listener {
             return;
         }
 
-        int size = Utils.getInventoriesWithSpace(playerCraft, finalItem.getMainItem(), Material.CHEST, Material.TRAPPED_CHEST).size();
+        List<Inventory> invs = Utils.getInventories(playerCraft, finalItem.getMainItem(), Material.CHEST, Material.TRAPPED_CHEST);
+        if (!CargoMain.isIsPre1_13()) {
+            invs.addAll(Utils.getInventoriesWithSpace(playerCraft, finalItem.getMainItem(), Material.BARREL));
+        }
+        int size = invs.size();
         if(size <=0 ){
             player.sendMessage(CargoMain.ERROR_TAG + "You don't have any space for " + itemName + " on this craft!");
             return;
@@ -388,5 +399,4 @@ public class CargoMain extends JavaPlugin implements Listener {
         new ProcessingTask(player, finalItem,size).runTaskTimer(this,0,20);
         player.sendMessage(SUCCESS_TAG + "Started loading cargo");
     }
-
 }
