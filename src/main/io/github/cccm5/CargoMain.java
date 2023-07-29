@@ -223,7 +223,6 @@ public class CargoMain extends JavaPlugin implements Listener {
     }
 
     private void unload(Player player){
-
         if(!player.hasPermission("Cargo.unload")){
             player.sendMessage(ERROR_TAG + "You don't have permission to do that!");
             return;
@@ -292,7 +291,7 @@ public class CargoMain extends JavaPlugin implements Listener {
 
         List<Inventory> invs = Utils.getInventories(playerCraft, finalItem.getMainItem(), Material.CHEST, Material.TRAPPED_CHEST);
         if (!CargoMain.isIsPre1_13()) {
-            invs.addAll(Utils.getInventoriesWithSpace(playerCraft, finalItem.getMainItem(), Material.BARREL));
+            invs.addAll(Utils.getInventories(playerCraft, finalItem.getMainItem(), Material.BARREL));
         }
         int size = invs.size();
         if(size <=0 ){
@@ -385,7 +384,7 @@ public class CargoMain extends JavaPlugin implements Listener {
             return;
         }
 
-        List<Inventory> invs = Utils.getInventories(playerCraft, finalItem.getMainItem(), Material.CHEST, Material.TRAPPED_CHEST);
+        List<Inventory> invs = Utils.getInventoriesWithSpace(playerCraft, finalItem.getMainItem(), Material.CHEST, Material.TRAPPED_CHEST);
         if (!CargoMain.isIsPre1_13()) {
             invs.addAll(Utils.getInventoriesWithSpace(playerCraft, finalItem.getMainItem(), Material.BARREL));
         }
@@ -394,6 +393,7 @@ public class CargoMain extends JavaPlugin implements Listener {
             player.sendMessage(CargoMain.ERROR_TAG + "You don't have any space for " + itemName + " on this craft!");
             return;
         }
+
         playersInQue.add(player);
         new LoadTask(craftManager.getCraftByPlayer(player),finalItem ).runTaskTimer(this,delay,delay);
         new ProcessingTask(player, finalItem,size).runTaskTimer(this,0,20);
