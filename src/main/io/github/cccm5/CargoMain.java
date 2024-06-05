@@ -264,7 +264,7 @@ public class CargoMain extends JavaPlugin implements Listener {
             if(finalItem!=null)
                 break;
             guiName = cargoMerchant.getTrait(TraderTrait.class).getGUIName();
-            AGUI gui = dtlTradersPlugin.getGuiListService().getGUI(guiName);
+            AGUI gui = dtlTradersPlugin.getGuiListService(a).getGUI(guiName);
             TradeGUI tradeGUI = (TradeGUI) gui;
             ItemStack compareItem = player.getInventory().getItemInMainHand().clone();
             finalItem = null;
