@@ -81,10 +81,10 @@
         <!--DTL Traders-->
         <dependency>
 			<groupId>com.degitise.minevid</groupId>
-			<artifactId>dtlTraders</artifactId>
+			<artifactId>dtlTradersPlus</artifactId>
 			<version>LATEST</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/libs/dtlTraders.jar</systemPath>
+            <systemPath>${project.basedir}/libs/dtlTradersPlus.jar</systemPath>
 		</dependency>
         <!--Citizens-->
         <dependency>
