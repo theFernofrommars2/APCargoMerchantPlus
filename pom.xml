@@ -86,6 +86,7 @@
             <scope>system</scope>
             <systemPath>${project.basedir}/libs/dtlTradersPlus.jar</systemPath>
 		</dependency>
+        <!--DTL Traders Plus-->
         <dependency>
 			<groupId>com.degitise.minevid</groupId>
 			<artifactId>dtlTraders</artifactId>
