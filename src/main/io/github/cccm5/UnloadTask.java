@@ -1,6 +1,6 @@
 package io.github.cccm5;
 
-import com.degitise.minevid.dtlTradersPlus.guis.items.TradableGUIItem;
+import com.degitise.minevid.dtlTraders.guis.items.TradableGUIItem;
 import net.countercraft.movecraft.craft.PlayerCraft;
 
 import org.bukkit.Material;
