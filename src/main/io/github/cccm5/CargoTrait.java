@@ -1,6 +1,6 @@
 package io.github.cccm5;
 
-import com.degitise.minevid.dtlTraders.utils.citizens.TraderTrait;
+import com.degitise.minevid.dtlTradersPlus.utils.citizens.TraderTrait;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.trait.TraitName;
 /**
