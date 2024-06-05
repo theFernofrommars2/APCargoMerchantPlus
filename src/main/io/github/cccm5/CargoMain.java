@@ -1,12 +1,12 @@
 package io.github.cccm5;
 
-import com.degitise.minevid.dtlTraders.Main;
-import com.degitise.minevid.dtlTraders.guis.AGUI;
-import com.degitise.minevid.dtlTraders.guis.gui.TradeGUI;
-import com.degitise.minevid.dtlTraders.guis.gui.TradeGUIPage;
-import com.degitise.minevid.dtlTraders.guis.items.AGUIItem;
-import com.degitise.minevid.dtlTraders.guis.items.TradableGUIItem;
-import com.degitise.minevid.dtlTraders.utils.citizens.TraderTrait;
+import com.degitise.minevid.dtlTradersPlus.Main;
+import com.degitise.minevid.dtlTradersPlus.guis.AGUI;
+import com.degitise.minevid.dtlTradersPlus.guis.gui.TradeGUI;
+import com.degitise.minevid.dtlTradersPlus.guis.gui.TradeGUIPage;
+import com.degitise.minevid.dtlTradersPlus.guis.items.AGUIItem;
+import com.degitise.minevid.dtlTradersPlus.guis.items.TradableGUIItem;
+import com.degitise.minevid.dtlTradersPlus.utils.citizens.TraderTrait;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.countercraft.movecraft.craft.Craft;
@@ -46,7 +46,7 @@ public class CargoMain extends JavaPlugin implements Listener {
     private static int delay;//ticks
     private static boolean isPre1_13 = false;
     private static Material SIGN_POST = Material.getMaterial("SIGN_POST");
-    private static Main dtlTradersPlugin;
+    private static Main dtlTradersPlusPlugin;
     private CraftManager craftManager;
     private FileConfiguration config;
     private boolean cardinalDistance;
@@ -114,11 +114,11 @@ public class CargoMain extends JavaPlugin implements Listener {
             getServer().getPluginManager().disablePlugin(this);	
             return;
         }
-        Plugin traders = getServer().getPluginManager().getPlugin("dtlTraders");
+        Plugin traders = getServer().getPluginManager().getPlugin("dtlTradersPlus");
         if (traders == null  || !(traders instanceof Main)){
             getServer().getPluginManager().disablePlugin(this);
         }
-        dtlTradersPlugin = (Main) traders;
+        dtlTradersPlusPlugin = (Main) traders;
         economy = getServer().getServicesManager().getRegistration(Economy.class).getProvider();
     }
 
@@ -264,7 +264,7 @@ public class CargoMain extends JavaPlugin implements Listener {
             if(finalItem!=null)
                 break;
             guiName = cargoMerchant.getTrait(TraderTrait.class).getGUIName();
-            AGUI gui = dtlTradersPlugin.getGuiListService().getGUI(guiName);
+            AGUI gui = dtlTradersPlusPlugin.getGuiListService().getGUI(guiName);
             TradeGUI tradeGUI = (TradeGUI) gui;
             ItemStack compareItem = player.getInventory().getItemInMainHand().clone();
             finalItem = null;
@@ -346,7 +346,7 @@ public class CargoMain extends JavaPlugin implements Listener {
         TradableGUIItem finalItem = null;
         for(NPC cargoMerchant : nearbyMerchants) {
             guiName = cargoMerchant.getTrait(TraderTrait.class).getGUIName();
-            AGUI gui = dtlTradersPlugin.getGuiListService().getGUI(guiName);
+            AGUI gui = dtlTradersPlusPlugin.getGuiListService().getGUI(guiName);
             TradeGUI tradeGUI = (TradeGUI) gui;
             ItemStack compareItem = player.getInventory().getItemInMainHand().clone();
             for (TradeGUIPage page : tradeGUI.getPages()) {
